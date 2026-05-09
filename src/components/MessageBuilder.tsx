@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 import {
   TextB, TextItalic, TextStrikethrough, Code,
-  Image, X,
 } from '@phosphor-icons/react';
 import type { Lead, Campaign } from '../types';
 import { buildMessage } from '../lib/buildMessage';
 import { formatWhatsApp } from '../lib/formatWhatsApp';
+import { ImageUpload } from './ImageUpload';
 
 interface Props {
   template: string;
@@ -197,90 +197,11 @@ export function MessageBuilder({ template, onChange, previewLead, campaign, onCh
         ))}
       </div>
 
-      {/* Image URL input */}
-      <div className="flex flex-col gap-1">
-        <label style={{ fontSize: 10, color: 'var(--text-muted)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
-          Image URL (sent as link in message)
-        </label>
-        <div style={{ position: 'relative' }}>
-          <Image
-            size={14}
-            style={{
-              position: 'absolute',
-              left: 10,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: 'var(--text-muted)',
-              pointerEvents: 'none',
-            }}
-          />
-          <input
-            type="url"
-            value={campaign.imageUrl}
-            placeholder="https://example.com/offer.jpg"
-            dir="ltr"
-            onChange={(e) => onChangeCampaign({ ...campaign, imageUrl: e.target.value })}
-            style={{
-              width: '100%',
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid var(--border-medium)',
-              borderRadius: 'var(--radius-md)',
-              padding: '7px 10px 7px 30px',
-              fontSize: 11,
-              color: 'var(--text-primary)',
-              outline: 'none',
-              fontFamily: 'var(--font-mono)',
-              transition: 'border-color var(--transition-fast), background var(--transition-fast)',
-            }}
-            onFocus={(e) => {
-              e.currentTarget.style.borderColor = 'var(--accent-border)';
-              e.currentTarget.style.background = 'var(--accent-muted)';
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = 'var(--border-medium)';
-              e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
-            }}
-          />
-          {campaign.imageUrl && (
-            <button
-              onClick={() => onChangeCampaign({ ...campaign, imageUrl: '' })}
-              style={{
-                position: 'absolute',
-                right: 6,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                background: 'none',
-                border: 'none',
-                color: 'var(--text-muted)',
-                cursor: 'pointer',
-                padding: 2,
-                display: 'flex',
-                transition: 'color var(--transition-fast)',
-              }}
-              onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
-            >
-              <X size={12} />
-            </button>
-          )}
-        </div>
-        {campaign.imageUrl && (
-          <div style={{
-            marginTop: 4,
-            borderRadius: 'var(--radius-sm)',
-            overflow: 'hidden',
-            border: '1px solid var(--border-subtle)',
-            maxHeight: 80,
-          }}>
-            <img
-              src={campaign.imageUrl}
-              alt="Offer preview"
-              style={{ width: '100%', objectFit: 'cover', display: 'block', maxHeight: 80 }}
-              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-            />
-          </div>
-        )}
-      </div>
+      {/* Image upload */}
+      <ImageUpload
+        imageUrl={campaign.imageUrl}
+        onChangeUrl={(url) => onChangeCampaign({ ...campaign, imageUrl: url })}
+      />
 
       {/* WhatsApp-style preview */}
       {preview && (

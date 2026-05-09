@@ -119,6 +119,23 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
               </div>
             </div>
 
+            {campaign.imageUrl && (
+              <div style={{ padding: '0 14px 8px' }}>
+                <img
+                  src={campaign.imageUrl}
+                  alt="Offer"
+                  style={{
+                    width: '100%',
+                    maxHeight: 120,
+                    objectFit: 'cover',
+                    borderRadius: 'var(--radius-sm)',
+                    display: 'block',
+                  }}
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                />
+              </div>
+            )}
+
             <div
               dir="rtl"
               dangerouslySetInnerHTML={{ __html: formatWhatsApp(preview) }}
