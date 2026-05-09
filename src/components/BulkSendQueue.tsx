@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { WhatsappLogo, SkipForward, X, CheckCircle } from '@phosphor-icons/react';
 import type { Lead, Campaign } from '../types';
 import { buildMessage, buildWaLink } from '../lib/buildMessage';
+import { formatWhatsApp } from '../lib/formatWhatsApp';
 
 interface Props {
   leads: Lead[];
@@ -65,21 +66,20 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
         style={{
           width: '100%',
           maxWidth: 480,
-          background: 'linear-gradient(160deg, #1a0a2e 0%, #16213e 100%)',
-          border: '1px solid rgba(233,69,96,0.35)',
-          borderRadius: 20,
+          background: 'var(--bg-raised)',
+          border: '1px solid var(--accent-border)',
+          borderRadius: 'var(--radius-xl)',
           overflow: 'hidden',
-          boxShadow: '0 24px 64px rgba(0,0,0,0.7)',
+          boxShadow: 'var(--shadow-lg)',
         }}
       >
-        {/* Progress header */}
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-subtle)' }}>
           <div className="flex items-center justify-between mb-3">
-            <div style={{ fontSize: 12, color: '#64748b' }}>
-              <span style={{ color: '#e94560', fontWeight: 700, fontFamily: '"JetBrains Mono", monospace' }}>{index + 1}</span>
-              <span style={{ color: '#475569' }}> / {leads.length}</span>
+            <div style={{ fontSize: 12, color: 'var(--text-secondary)' }} className="tabular-nums">
+              <span style={{ color: 'var(--accent)', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{index + 1}</span>
+              <span style={{ color: 'var(--text-muted)' }}> / {leads.length}</span>
             </div>
-            <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#475569', cursor: 'pointer', display: 'flex', padding: 4 }}>
+            <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', padding: 4, transition: 'color var(--transition-fast)' }} onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')} onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>
               <X size={16} />
             </button>
           </div>
@@ -87,12 +87,11 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
             <motion.div
               animate={{ width: `${pct}%` }}
               transition={{ duration: 0.4 }}
-              style={{ height: '100%', borderRadius: 99, background: 'linear-gradient(90deg, #e94560, #f97316)' }}
+              style={{ height: '100%', borderRadius: 99, background: 'var(--accent)' }}
             />
           </div>
         </div>
 
-        {/* Lead card */}
         <AnimatePresence mode="wait">
           <motion.div
             key={lead.id}
@@ -102,45 +101,41 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
             transition={{ duration: 0.2 }}
             style={{ padding: '20px 24px' }}
           >
-            {/* Contact info */}
             <div className="flex items-start gap-4 mb-5">
               <div
                 style={{
                   width: 44, height: 44, borderRadius: 12,
-                  background: 'linear-gradient(135deg, rgba(233,69,96,0.2), rgba(249,115,22,0.15))',
-                  border: '1px solid rgba(233,69,96,0.3)',
+                  background: 'var(--accent-muted)',
+                  border: '1px solid var(--accent-border)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: 18, fontWeight: 700, color: '#e94560', flexShrink: 0,
+                  fontSize: 18, fontWeight: 700, color: 'var(--accent)', flexShrink: 0,
                 }}
               >
                 {lead.name.charAt(0)}
               </div>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 700, color: '#e2e8f0', marginBottom: 3 }}>{lead.name}</div>
-                <div style={{ fontSize: 12, color: '#64748b', fontFamily: '"JetBrains Mono", monospace', direction: 'ltr' }}>{lead.phone}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 3 }}>{lead.name}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', direction: 'ltr' }} className="tabular-nums">{lead.phone}</div>
               </div>
             </div>
 
-            {/* Message preview */}
             <div
               dir="rtl"
+              dangerouslySetInnerHTML={{ __html: formatWhatsApp(preview) }}
               style={{
-                background: 'rgba(255,255,255,0.03)',
-                border: '1px solid rgba(255,255,255,0.07)',
-                borderRadius: 10,
+                background: 'linear-gradient(135deg, #005c4b, #004d40)',
+                border: '1px solid rgba(37,211,102,0.2)',
+                borderRadius: 'var(--radius-md)',
                 padding: '12px 14px',
                 fontSize: 12,
-                color: '#94a3b8',
-                lineHeight: 1.75,
+                color: '#e9edef',
+                lineHeight: 1.8,
                 marginBottom: 20,
-                maxHeight: 100,
+                maxHeight: 120,
                 overflowY: 'auto',
               }}
-            >
-              {preview}
-            </div>
+            />
 
-            {/* Actions */}
             <div className="flex items-center gap-3">
               {!opened ? (
                 <button
@@ -148,15 +143,17 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
                   className="flex items-center gap-2 flex-1"
                   style={{
                     justifyContent: 'center',
-                    background: 'linear-gradient(90deg, #e94560, #f97316)',
-                    border: 'none', borderRadius: 10, padding: '11px 20px',
+                    background: 'var(--accent)',
+                    border: 'none', borderRadius: 'var(--radius-md)', padding: '11px 20px',
                     fontSize: 14, fontWeight: 700, color: '#fff', cursor: 'pointer',
-                    fontFamily: '"Outfit", sans-serif',
+                    fontFamily: 'var(--font-sans)',
                     boxShadow: '0 4px 18px rgba(233,69,96,0.4)',
-                    transition: 'transform 0.1s',
+                    transition: 'transform 0.1s, box-shadow var(--transition-base)',
                   }}
                   onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.97)')}
                   onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
+                  onMouseEnter={e => (e.currentTarget.style.boxShadow = '0 6px 24px rgba(233,69,96,0.5)')}
+                  onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 4px 18px rgba(233,69,96,0.4)')}
                 >
                   <WhatsappLogo size={16} weight="fill" />
                   إرسال عبر واتساب
@@ -167,16 +164,18 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
                   className="flex items-center gap-2 flex-1"
                   style={{
                     justifyContent: 'center',
-                    background: 'rgba(16,185,129,0.15)',
-                    border: '1px solid rgba(16,185,129,0.35)',
-                    borderRadius: 10, padding: '11px 20px',
+                    background: 'var(--success-muted)',
+                    border: `1px solid var(--success-border)`,
+                    borderRadius: 'var(--radius-md)', padding: '11px 20px',
                     fontSize: 14, fontWeight: 700,
-                    color: '#10b981', cursor: 'pointer',
-                    fontFamily: '"Outfit", sans-serif',
-                    transition: 'transform 0.1s',
+                    color: 'var(--success)', cursor: 'pointer',
+                    fontFamily: 'var(--font-sans)',
+                    transition: 'transform 0.1s, background var(--transition-fast)',
                   }}
                   onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.97)')}
                   onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
+                  onMouseEnter={e => (e.currentTarget.style.background = 'rgba(34,197,94,0.2)')}
+                  onMouseLeave={e => (e.currentTarget.style.background = 'var(--success-muted)')}
                 >
                   <CheckCircle size={16} weight="fill" />
                   {isLast ? 'Finish' : 'Next →'}
@@ -188,10 +187,19 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
                 className="flex items-center gap-1"
                 style={{
                   background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: 10, padding: '11px 14px',
-                  fontSize: 12, color: '#64748b', cursor: 'pointer',
-                  fontFamily: '"Outfit", sans-serif',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: 'var(--radius-md)', padding: '11px 14px',
+                  fontSize: 12, color: 'var(--text-secondary)', cursor: 'pointer',
+                  fontFamily: 'var(--font-sans)',
+                  transition: 'all var(--transition-fast)',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = 'var(--border-medium)';
+                  e.currentTarget.style.color = 'var(--text-primary)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = 'var(--border-subtle)';
+                  e.currentTarget.style.color = 'var(--text-secondary)';
                 }}
               >
                 <SkipForward size={14} />
@@ -214,7 +222,7 @@ function Overlay({ children }: { children: React.ReactNode }) {
       style={{
         position: 'fixed', inset: 0, zIndex: 50,
         background: 'rgba(7,5,20,0.85)',
-        backdropFilter: 'blur(6px)',
+        backdropFilter: 'blur(8px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: 24,
       }}
@@ -230,28 +238,31 @@ function DoneCard({ total, onClose }: { total: number; onClose: () => void }) {
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       style={{
-        background: 'linear-gradient(160deg, #1a0a2e, #16213e)',
-        border: '1px solid rgba(16,185,129,0.4)',
-        borderRadius: 20, padding: '40px 48px',
+        background: 'var(--bg-raised)',
+        border: `1px solid var(--success-border)`,
+        borderRadius: 'var(--radius-xl)', padding: '40px 48px',
         textAlign: 'center',
-        boxShadow: '0 24px 64px rgba(0,0,0,0.7)',
+        boxShadow: 'var(--shadow-lg)',
       }}
     >
-      <CheckCircle size={48} weight="fill" style={{ color: '#10b981', marginBottom: 16 }} />
-      <div style={{ fontSize: 20, fontWeight: 700, color: '#e2e8f0', marginBottom: 8 }}>
-        All Done!
+      <CheckCircle size={48} weight="fill" style={{ color: 'var(--success)', marginBottom: 16 }} />
+      <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>
+        All Done
       </div>
-      <div style={{ fontSize: 13, color: '#64748b', marginBottom: 24 }}>
+      <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 24 }}>
         Sent to {total} contacts successfully.
       </div>
       <button
         onClick={onClose}
         style={{
-          background: 'linear-gradient(90deg, #e94560, #f97316)',
-          border: 'none', borderRadius: 10, padding: '10px 28px',
+          background: 'var(--accent)',
+          border: 'none', borderRadius: 'var(--radius-md)', padding: '10px 28px',
           fontSize: 14, fontWeight: 600, color: '#fff', cursor: 'pointer',
-          fontFamily: '"Outfit", sans-serif',
+          fontFamily: 'var(--font-sans)',
+          transition: 'transform var(--transition-fast), box-shadow var(--transition-base)',
         }}
+        onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.97)')}
+        onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
       >
         Close
       </button>

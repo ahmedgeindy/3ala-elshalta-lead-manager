@@ -10,6 +10,7 @@ const DEFAULT_CAMPAIGN: Campaign = {
   discount: '25%',
   duration: 'أسبوع',
   url: '',
+  imageUrl: '',
 };
 
 export function useLeads() {
@@ -20,8 +21,10 @@ export function useLeads() {
   const [template, setTemplate] = useState(DEFAULT_TEMPLATE);
   const [activeLeadId, setActiveLeadId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const loadFile = useCallback(async (file: File) => {
+    setLoading(true);
     try {
       setError(null);
       const rows = await parseFile(file);
@@ -48,6 +51,8 @@ export function useLeads() {
       setActiveLeadId(first?.id ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to parse file');
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -103,6 +108,7 @@ export function useLeads() {
     activeLeadId,
     stats,
     error,
+    loading,
     loadFile,
     markSent,
     setCampaign,

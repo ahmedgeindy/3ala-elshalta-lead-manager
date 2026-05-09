@@ -51,14 +51,14 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #0a0917 0%, #0d0d1f 50%, #12112a 100%)',
+        background: 'var(--bg-base)',
       }}
     >
       <div style={{
         position: 'absolute',
         width: 320, height: 320,
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(233,69,96,0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(233,69,96,0.06) 0%, transparent 70%)',
         pointerEvents: 'none',
       }} />
 
@@ -69,35 +69,35 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
           width: '100%',
           maxWidth: 380,
           padding: '40px 36px',
-          background: 'rgba(16,15,36,0.9)',
-          border: `1px solid ${error ? 'rgba(248,113,113,0.4)' : 'rgba(233,69,96,0.25)'}`,
-          borderRadius: 20,
+          background: 'var(--bg-raised)',
+          border: `1px solid ${error ? 'rgba(248,113,113,0.4)' : 'var(--accent-border)'}`,
+          borderRadius: 'var(--radius-xl)',
           backdropFilter: 'blur(24px)',
-          boxShadow: '0 24px 64px rgba(0,0,0,0.6)',
+          boxShadow: 'var(--shadow-lg)',
           transition: 'border-color 0.2s',
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{
             width: 52, height: 52, borderRadius: 14, margin: '0 auto 14px',
-            background: 'linear-gradient(135deg, rgba(233,69,96,0.2), rgba(249,115,22,0.15))',
-            border: '1px solid rgba(233,69,96,0.35)',
+            background: 'var(--accent-muted)',
+            border: '1px solid var(--accent-border)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <LockSimple size={24} style={{ color: '#e94560' }} weight="fill" />
+            <LockSimple size={24} style={{ color: 'var(--accent)' }} weight="fill" />
           </div>
-          <div style={{ fontSize: 20, fontWeight: 700, color: '#e94560', letterSpacing: 0.5 }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--accent)', letterSpacing: 0.5 }}>
             على الشلته
           </div>
-          <div style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>
+          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
             Lead Manager — Private Access
           </div>
         </div>
 
         <div style={{ marginBottom: 16 }}>
           <label style={{
-            display: 'block', fontSize: 10, fontWeight: 700,
-            letterSpacing: '1px', color: '#64748b',
+            display: 'block', fontSize: 10, fontWeight: 600,
+            letterSpacing: '0.8px', color: 'var(--text-muted)',
             textTransform: 'uppercase', marginBottom: 8,
           }}>
             Password
@@ -113,16 +113,24 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
               style={{
                 width: '100%',
                 background: 'rgba(255,255,255,0.04)',
-                border: `1px solid ${error ? 'rgba(248,113,113,0.5)' : 'rgba(233,69,96,0.2)'}`,
-                borderRadius: 10,
+                border: `1px solid ${error ? 'rgba(248,113,113,0.5)' : 'var(--border-medium)'}`,
+                borderRadius: 'var(--radius-md)',
                 padding: '11px 40px 11px 14px',
                 fontSize: 14,
-                color: '#e2e8f0',
+                color: 'var(--text-primary)',
                 outline: 'none',
-                fontFamily: '"JetBrains Mono", monospace',
+                fontFamily: 'var(--font-mono)',
                 letterSpacing: show ? 0 : 3,
-                transition: 'border-color 0.15s',
+                transition: 'border-color var(--transition-fast), background var(--transition-fast)',
                 boxSizing: 'border-box',
+              }}
+              onFocus={e => {
+                e.target.style.borderColor = 'var(--accent-border)';
+                e.target.style.background = 'var(--accent-muted)';
+              }}
+              onBlur={e => {
+                e.target.style.borderColor = 'var(--border-medium)';
+                e.target.style.background = 'rgba(255,255,255,0.04)';
               }}
             />
             <button
@@ -132,9 +140,12 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
                 position: 'absolute', right: 12, top: '50%',
                 transform: 'translateY(-50%)',
                 background: 'none', border: 'none',
-                color: '#475569', cursor: 'pointer', padding: 2,
+                color: 'var(--text-muted)', cursor: 'pointer', padding: 2,
                 display: 'flex',
+                transition: 'color var(--transition-fast)',
               }}
+              onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
             >
               {show ? <EyeSlash size={16} /> : <Eye size={16} />}
             </button>
@@ -152,7 +163,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
                 fontSize: 12, color: '#f87171',
                 background: 'rgba(248,113,113,0.08)',
                 border: '1px solid rgba(248,113,113,0.2)',
-                borderRadius: 8, padding: '7px 10px', marginBottom: 14,
+                borderRadius: 'var(--radius-sm)', padding: '7px 10px', marginBottom: 14,
               }}
             >
               <Warning size={13} />
@@ -166,27 +177,27 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
           disabled={!value}
           style={{
             width: '100%',
-            background: value
-              ? 'linear-gradient(90deg, #e94560, #f97316)'
-              : 'rgba(255,255,255,0.05)',
+            background: value ? 'var(--accent)' : 'rgba(255,255,255,0.05)',
             border: 'none',
-            borderRadius: 10,
+            borderRadius: 'var(--radius-md)',
             padding: '12px',
             fontSize: 14, fontWeight: 700,
-            color: value ? '#fff' : '#475569',
+            color: value ? '#fff' : 'var(--text-muted)',
             cursor: value ? 'pointer' : 'not-allowed',
-            fontFamily: '"Outfit", sans-serif',
-            transition: 'all 0.2s',
+            fontFamily: 'var(--font-sans)',
+            transition: 'all var(--transition-base)',
             boxShadow: value ? '0 4px 18px rgba(233,69,96,0.35)' : 'none',
           }}
           onMouseDown={e => value && ((e.target as HTMLElement).style.transform = 'scale(0.98)')}
           onMouseUp={e => ((e.target as HTMLElement).style.transform = 'scale(1)')}
+          onMouseEnter={e => { if (value) (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 24px rgba(233,69,96,0.5)'; }}
+          onMouseLeave={e => { if (value) (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 18px rgba(233,69,96,0.35)'; }}
         >
           Enter
         </button>
 
         {import.meta.env.DEV && !CORRECT && (
-          <div style={{ fontSize: 10, color: '#334155', textAlign: 'center', marginTop: 14 }}>
+          <div style={{ fontSize: 10, color: 'var(--text-muted)', textAlign: 'center', marginTop: 14 }}>
             Dev mode: set VITE_APP_PASSWORD in .env.local
           </div>
         )}

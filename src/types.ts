@@ -12,4 +12,5 @@ export interface Campaign {
   discount: string;
   duration: string;
   url: string;
+  imageUrl: string;
 }

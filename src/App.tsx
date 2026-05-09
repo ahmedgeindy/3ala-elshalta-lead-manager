@@ -12,7 +12,7 @@ import type { Lead } from './types';
 
 export default function App() {
   const {
-    leads, campaign, template, activeLeadId, stats, error,
+    leads, campaign, template, activeLeadId, stats, error, loading,
     loadFile, markSent, setCampaign, setTemplate, resetHistory, exportCsv,
   } = useLeads();
 
@@ -33,51 +33,50 @@ export default function App() {
 
   return (
     <LoginGate>
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', background: '#0d0d1f' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', background: 'var(--bg-base)' }}>
 
-      {/* Topbar */}
       <header style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 24px', height: 52, flexShrink: 0,
-        background: 'linear-gradient(90deg, #1a0a2e 0%, #16213e 100%)',
-        borderBottom: '1px solid #e94560',
+        background: 'var(--bg-surface)',
+        borderBottom: '1px solid var(--accent-border)',
+        boxShadow: '0 1px 12px rgba(233, 69, 96, 0.06)',
       }}>
-        <div style={{ fontSize: 16, fontWeight: 700, letterSpacing: 1, color: '#e94560' }}>
-          على الشلته{' '}
-          <span style={{ color: '#f97316' }}>|</span>
-          <span style={{ color: '#94a3b8', fontWeight: 400, marginLeft: 8, fontSize: 13 }}>Lead Manager</span>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
+          <span style={{ fontSize: 16, fontWeight: 700, letterSpacing: 0.5, color: 'var(--accent)' }}>
+            على الشلته
+          </span>
+          <span style={{ color: 'var(--text-muted)', fontWeight: 400, fontSize: 13 }}>Lead Manager</span>
         </div>
 
         {stats.total > 0 && (
-          <div style={{ display: 'flex', gap: 20, fontSize: 12, color: '#64748b', alignItems: 'center' }}>
-            <span>Campaign: <strong style={{ color: '#e2e8f0' }}>{campaign.name || '—'}</strong></span>
-            <span style={{ fontFamily: '"JetBrains Mono", monospace' }}>
-              Total: <strong style={{ color: '#e2e8f0' }}>{stats.total}</strong>
+          <div style={{ display: 'flex', gap: 20, fontSize: 12, color: 'var(--text-secondary)', alignItems: 'center' }}>
+            <span>Campaign: <strong style={{ color: 'var(--text-primary)' }}>{campaign.name || '—'}</strong></span>
+            <span className="tabular-nums">
+              Total: <strong style={{ color: 'var(--text-primary)' }}>{stats.total}</strong>
             </span>
-            <span style={{ color: '#10b981', fontFamily: '"JetBrains Mono", monospace' }}>
-              ✓ {stats.sent} sent
+            <span style={{ color: 'var(--success)', fontFamily: 'var(--font-mono)' }} className="tabular-nums">
+              {stats.sent} sent
             </span>
-            <span style={{ color: '#f97316', fontFamily: '"JetBrains Mono", monospace' }}>
+            <span style={{ color: 'var(--pending)', fontFamily: 'var(--font-mono)' }} className="tabular-nums">
               {stats.pending} pending
             </span>
           </div>
         )}
       </header>
 
-      {/* Body */}
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
-        {/* Sidebar */}
         <aside style={{
           width: 340, flexShrink: 0,
-          background: '#100f24',
-          borderRight: '1px solid rgba(233,69,96,0.15)',
+          background: 'var(--bg-surface)',
+          borderRight: '1px solid var(--border-subtle)',
           overflowY: 'auto',
           padding: 18,
-          display: 'flex', flexDirection: 'column', gap: 20,
+          display: 'flex', flexDirection: 'column', gap: 18,
         }}>
           <Card>
-            <UploadZone onFile={loadFile} stats={stats} error={error} onResetHistory={resetHistory} />
+            <UploadZone onFile={loadFile} stats={stats} error={error} onResetHistory={resetHistory} loading={loading} />
           </Card>
           <Card>
             <CampaignPanel campaign={campaign} onChange={setCampaign} />
@@ -88,6 +87,7 @@ export default function App() {
               onChange={setTemplate}
               previewLead={activeLead}
               campaign={campaign}
+              onChangeCampaign={setCampaign}
             />
           </Card>
           {stats.total > 0 && (
@@ -97,13 +97,13 @@ export default function App() {
           )}
         </aside>
 
-        {/* Main */}
         <main style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           <LeadTable
             leads={leads}
             activeLeadId={activeLeadId}
             campaign={campaign}
             template={template}
+            loading={loading}
             onSend={markSent}
             onBulkSend={openBulkQueue}
             onExport={exportCsv}
@@ -111,7 +111,6 @@ export default function App() {
         </main>
       </div>
 
-      {/* Bulk Queue Modal */}
       <AnimatePresence>
         {queueOpen && (
           <BulkSendQueue
@@ -131,10 +130,11 @@ export default function App() {
 function Card({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
-      background: 'rgba(233,69,96,0.04)',
-      border: '1px solid rgba(233,69,96,0.14)',
-      borderRadius: 12,
+      background: 'var(--accent-muted)',
+      border: '1px solid var(--accent-border)',
+      borderRadius: 'var(--radius-lg)',
       padding: 16,
+      transition: 'border-color var(--transition-base)',
     }}>
       {children}
     </div>

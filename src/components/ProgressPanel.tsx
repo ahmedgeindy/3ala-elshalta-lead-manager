@@ -10,10 +10,10 @@ export function ProgressPanel({ stats }: Props) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '1.2px', color: '#e94560', textTransform: 'uppercase' }}>
+        <span className="label" style={{ color: 'var(--accent)' }}>
           Progress
         </span>
-        <span style={{ fontSize: 11, fontWeight: 600, color: pct === 100 ? '#10b981' : '#f97316', fontFamily: '"JetBrains Mono", monospace' }}>
+        <span style={{ fontSize: 11, fontWeight: 600, color: pct === 100 ? 'var(--success)' : 'var(--pending)', fontFamily: 'var(--font-mono)' }} className="tabular-nums">
           {pct}%
         </span>
       </div>
@@ -26,19 +26,19 @@ export function ProgressPanel({ stats }: Props) {
           style={{
             height: '100%',
             borderRadius: 99,
-            background: 'linear-gradient(90deg, #e94560, #f97316)',
+            background: pct === 100 ? 'var(--success)' : 'var(--accent)',
           }}
         />
       </div>
 
-      <div className="flex justify-between" style={{ fontSize: 11 }}>
-        <span style={{ color: '#10b981', fontFamily: '"JetBrains Mono", monospace' }}>
+      <div className="flex justify-between tabular-nums" style={{ fontSize: 11 }}>
+        <span style={{ color: 'var(--success)', fontFamily: 'var(--font-mono)' }}>
           {stats.sent} sent
         </span>
-        <span style={{ color: '#64748b', fontFamily: '"JetBrains Mono", monospace' }}>
+        <span style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
           {stats.total} total
         </span>
-        <span style={{ color: '#f97316', fontFamily: '"JetBrains Mono", monospace' }}>
+        <span style={{ color: 'var(--pending)', fontFamily: 'var(--font-mono)' }}>
           {stats.pending} left
         </span>
       </div>
