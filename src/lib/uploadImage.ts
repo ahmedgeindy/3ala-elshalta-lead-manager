@@ -84,12 +84,12 @@ export async function uploadImage(file: File): Promise<UploadResult | UploadErro
       return { error: 'Compressed image is still too large. Try a smaller image.' };
     }
 
-    const response = await fetch(FUNCTION_URL, {
+    const url = new URL(FUNCTION_URL);
+    url.searchParams.set('key', API_KEY);
+
+    const response = await fetch(url.toString(), {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Api-Key': API_KEY,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ image: data, contentType, filename }),
     });
 
