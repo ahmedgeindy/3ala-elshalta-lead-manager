@@ -7,6 +7,7 @@ import { MessageBuilder } from './components/MessageBuilder';
 import { ProgressPanel } from './components/ProgressPanel';
 import { LeadTable } from './components/LeadTable';
 import { BulkSendQueue } from './components/BulkSendQueue';
+import { LoginGate } from './components/LoginGate';
 import type { Lead } from './types';
 
 export default function App() {
@@ -31,6 +32,7 @@ export default function App() {
   };
 
   return (
+    <LoginGate>
     <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', background: '#0d0d1f' }}>
 
       {/* Topbar */}
@@ -122,6 +124,7 @@ export default function App() {
         )}
       </AnimatePresence>
     </div>
+    </LoginGate>
   );
 }
 
