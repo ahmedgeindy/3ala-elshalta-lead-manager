@@ -33,7 +33,7 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
 
   const handleOpen = () => {
     const msg = buildMessage(template, lead, campaign);
-    window.open(buildWaLink(lead.phone, msg), '_blank');
+    window.open(buildWaLink(lead.phone, msg), 'whatsapp_window');
     onMarkSent(lead.id);
     setOpened(true);
   };
@@ -119,20 +119,38 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
               </div>
             </div>
 
-            {campaign.imageUrl && (
-              <div style={{ padding: '0 14px 8px' }}>
-                <img
-                  src={campaign.imageUrl}
-                  alt="Offer"
-                  style={{
-                    width: '100%',
-                    maxHeight: 120,
-                    objectFit: 'cover',
+            {campaign.imageUrls.length > 0 && (
+              <div style={{ padding: '0 14px 8px', display: 'flex', gap: 6 }}>
+                {campaign.imageUrls.filter(u => u).slice(0, 3).map((url, i) => (
+                  <div
+                    key={url + i}
+                    style={{
+                      flex: 1, minWidth: 0, height: 72,
+                      borderRadius: 'var(--radius-sm)',
+                      overflow: 'hidden',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                    }}
+                  >
+                    <img
+                      src={url}
+                      alt={`Offer ${i + 1}`}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  </div>
+                ))}
+                {campaign.imageUrls.length > 3 && (
+                  <div style={{
+                    width: 48, height: 72, flexShrink: 0,
                     borderRadius: 'var(--radius-sm)',
-                    display: 'block',
-                  }}
-                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-                />
+                    background: 'rgba(255,255,255,0.08)',
+                    border: '1px solid var(--border-subtle)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 11, color: 'var(--text-secondary)', fontWeight: 600,
+                  }}>
+                    +{campaign.imageUrls.length - 3}
+                  </div>
+                )}
               </div>
             )}
 

@@ -54,26 +54,38 @@ const API_KEY = process.env.UPLOAD_API_KEY || 'changeme';
 
 exports.handler = async (event) => {
   const origin = event.headers?.origin || event.headers?.Origin || '*';
-  const headers = { 'Access-Control-Allow-Origin': origin, 'Access-Type': 'application/json' };
 
-  const apiKey = event.queryStringParameters?.key;
+  if (event.requestContext?.http?.method === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': origin,
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, X-Api-Key',
+        'Access-Control-Max-Age': '86400',
+      },
+      body: '',
+    };
+  }
+
+  const apiKey = event.headers?.['x-api-key'] || event.headers?.['X-Api-Key'];
   if (apiKey !== API_KEY) {
-    return { statusCode: 401, headers, body: 'Unauthorized' };
+    return { statusCode: 401, headers: { 'Access-Control-Allow-Origin': origin }, body: 'Unauthorized' };
   }
 
   if (!event.body) {
-    return { statusCode: 400, headers, body: 'Missing body' };
+    return { statusCode: 400, headers: { 'Access-Control-Allow-Origin': origin }, body: 'Missing body' };
   }
 
   try {
     const { image, contentType, filename } = JSON.parse(event.isBase64Encoded ? Buffer.from(event.body, 'base64').toString() : event.body);
 
     if (!ALLOWED_TYPES.includes(contentType)) {
-      return { statusCode: 400, headers, body: 'Invalid content type' };
+      return { statusCode: 400, headers: { 'Access-Control-Allow-Origin': origin }, body: 'Invalid content type' };
     }
 
     if (!image || image.length > MAX_SIZE) {
-      return { statusCode: 400, headers, body: 'Image too large (max 5MB)' };
+      return { statusCode: 400, headers: { 'Access-Control-Allow-Origin': origin }, body: 'Image too large (max 5MB)' };
     }
 
     const buffer = Buffer.from(image, 'base64');
@@ -88,10 +100,14 @@ exports.handler = async (event) => {
     }));
 
     const url = `https://${BUCKET}.s3.amazonaws.com/${key}`;
-    return { statusCode: 200, headers, body: JSON.stringify({ url }) };
+    return {
+      statusCode: 200,
+      headers: { 'Access-Control-Allow-Origin': origin, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+    };
   } catch (err) {
     console.error('Upload error:', err);
-    return { statusCode: 500, headers, body: 'Upload failed' };
+    return { statusCode: 500, headers: { 'Access-Control-Allow-Origin': origin }, body: 'Upload failed' };
   }
 };
 ```
@@ -109,12 +125,8 @@ exports.handler = async (event) => {
 
 1. Go to **Configuration** → **Function URL**
 2. Click **Create function URL**
-3. Auth type: **NONE** (we use our own API key via query string)
-4. CORS: check **Enable CORS**, then set:
-   - **Allowed origins**: `*`
-   - **Allowed methods**: `POST`
-   - **Allowed headers**: `Content-Type`
-   - **Max age**: `86400`
+3. Auth type: **NONE** (we use our own API key)
+4. CORS: check **Enable CORS**
 5. Click **Save**
 6. **Copy the Function URL** — it looks like `https://xxxxxxxxx.lambda-url.us-east-1.on.aws/`
 7. **Write down this URL** — you'll need it for the app's `.env.local`
@@ -133,6 +145,6 @@ For Amplify Console deployment, add these same variables in:
 
 For GitHub Actions, add them as repository secrets:
 ```bash
-gh secret set VITE_UPLOAD_API_KEY --body "your-api-key-here"
-gh secret set VITE_UPLOAD_FUNCTION_URL --body "your-function-url-here"
+gh secret set VITE_UPLOAD_API_KEY --body "shalta_sk_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6"
+gh secret set VITE_UPLOAD_FUNCTION_URL --body "https://2rnlqck7q2okrsmqqyhfozsmlu0ohnsp.lambda-url.us-east-1.on.aws/"
 ```

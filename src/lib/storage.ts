@@ -8,7 +8,7 @@ const DEFAULT_CAMPAIGN: Campaign = {
   discount: '',
   duration: '',
   url: '',
-  imageUrl: '',
+  imageUrls: [],
 };
 
 export function getSentPhones(): Set<string> {
@@ -41,8 +41,16 @@ export function saveCampaign(campaign: Campaign): void {
 export function loadCampaign(): Campaign | null {
   try {
     const raw = localStorage.getItem(CAMPAIGN_KEY);
-    const loaded = raw ? JSON.parse(raw) : null;
-    return loaded ? { ...DEFAULT_CAMPAIGN, ...loaded } : null;
+    if (!raw) return null;
+    const loaded = JSON.parse(raw);
+
+    // Migrate legacy single imageUrl to imageUrls array
+    if (loaded && typeof loaded.imageUrl === 'string' && !loaded.imageUrls) {
+      loaded.imageUrls = loaded.imageUrl ? [loaded.imageUrl] : [];
+      delete loaded.imageUrl;
+    }
+
+    return { ...DEFAULT_CAMPAIGN, ...loaded };
   } catch {
     return null;
   }

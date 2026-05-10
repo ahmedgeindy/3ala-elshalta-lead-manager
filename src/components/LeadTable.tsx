@@ -129,7 +129,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
           <SendButton
             onClick={() => {
               const msg = buildMessage(template, lead, campaign);
-              window.open(buildWaLink(lead.phone, msg), '_blank');
+              window.open(buildWaLink(lead.phone, msg), 'whatsapp_window');
               onSend(lead.id);
             }}
             isActive={lead.id === activeLeadId}

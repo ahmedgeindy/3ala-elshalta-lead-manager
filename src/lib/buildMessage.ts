@@ -12,8 +12,11 @@ export function buildMessage(template: string, lead: Lead, campaign: Campaign): 
     .replace(/\{\{url\}\}/gi, campaign.url)
     .replace(/\{\{(\w+)\}\}/gi, (_, key) => lead.rowData[key] ?? `{{${key}}}`);
 
-  if (campaign.imageUrl) {
-    msg += '\n\n' + campaign.imageUrl;
+  const urls = campaign.imageUrls.filter(u => u.trim() !== '');
+  if (urls.length === 1) {
+    msg += '\n\n📸 ' + urls[0];
+  } else if (urls.length > 1) {
+    msg += '\n\n📸 صور العرض:\n' + urls.map((u, i) => `${i + 1}. ${u}`).join('\n');
   }
 
   return msg;

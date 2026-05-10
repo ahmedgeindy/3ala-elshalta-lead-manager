@@ -199,8 +199,8 @@ export function MessageBuilder({ template, onChange, previewLead, campaign, onCh
 
       {/* Image upload */}
       <ImageUpload
-        imageUrl={campaign.imageUrl}
-        onChangeUrl={(url) => onChangeCampaign({ ...campaign, imageUrl: url })}
+        imageUrls={campaign.imageUrls}
+        onChangeUrls={(urls) => onChangeCampaign({ ...campaign, imageUrls: urls })}
       />
 
       {/* WhatsApp-style preview */}
@@ -230,20 +230,26 @@ export function MessageBuilder({ template, onChange, previewLead, campaign, onCh
             Live Preview — {previewLead?.name}
           </div>
 
-          {campaign.imageUrl && (
-            <div style={{ padding: '8px 12px 0' }}>
-              <div style={{
-                borderRadius: 'var(--radius-sm)',
-                overflow: 'hidden',
-                border: '1px solid rgba(255,255,255,0.1)',
-              }}>
-                <img
-                  src={campaign.imageUrl}
-                  alt="Offer"
-                  style={{ width: '100%', maxHeight: 120, objectFit: 'cover', display: 'block' }}
-                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-                />
-              </div>
+          {campaign.imageUrls.length > 0 && (
+            <div style={{ padding: '8px 12px 0', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+              {campaign.imageUrls.filter(u => u).map((url, i) => (
+                <div
+                  key={url + i}
+                  style={{
+                    width: 60, height: 60, flexShrink: 0,
+                    borderRadius: 'var(--radius-sm)',
+                    overflow: 'hidden',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                  }}
+                >
+                  <img
+                    src={url}
+                    alt={`Offer ${i + 1}`}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                  />
+                </div>
+              ))}
             </div>
           )}
 
@@ -255,8 +261,8 @@ export function MessageBuilder({ template, onChange, previewLead, campaign, onCh
               color: '#e9edef',
               lineHeight: 1.8,
               background: 'linear-gradient(135deg, #005c4b, #004d40)',
-              margin: campaign.imageUrl ? '8px 12px 12px' : undefined,
-              borderRadius: campaign.imageUrl ? '0 0 var(--radius-sm) var(--radius-sm)' : undefined,
+              margin: campaign.imageUrls.length > 0 ? '8px 12px 12px' : undefined,
+              borderRadius: campaign.imageUrls.length > 0 ? '0 0 var(--radius-sm) var(--radius-sm)' : undefined,
             }}
             dangerouslySetInnerHTML={{ __html: formatWhatsApp(preview) }}
           />

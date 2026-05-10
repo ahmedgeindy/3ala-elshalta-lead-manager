@@ -10,7 +10,7 @@ const DEFAULT_CAMPAIGN: Campaign = {
   discount: '25%',
   duration: 'أسبوع',
   url: '',
-  imageUrl: '',
+  imageUrls: [],
 };
 
 export function useLeads() {
