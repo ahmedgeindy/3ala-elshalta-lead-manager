@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import type { SmartMenuPage } from '../types';
 import { validateSlug, generateSlug } from '../lib/slugUtils';
 import { ImageUpload } from './ImageUpload';
+import { Warning } from '@phosphor-icons/react';
 
 interface SmartMenuEditorProps {
   page: Partial<SmartMenuPage>;
@@ -58,7 +59,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>)
   e.currentTarget.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.2)';
 };
 
-export function SmartMenuEditor({ page, onChange, onPublish: _onPublish, publishing: _publishing, error: _error }: SmartMenuEditorProps) {
+export function SmartMenuEditor({ page, onChange, onPublish: _onPublish, publishing: _publishing, error }: SmartMenuEditorProps) {
   const [slugError, setSlugError] = useState<string | null>(null);
 
   const handleChange = useCallback(
@@ -241,6 +242,24 @@ export function SmartMenuEditor({ page, onChange, onPublish: _onPublish, publish
           {page.isActive !== false ? 'Active' : 'Inactive'}
         </span>
       </div>
+
+      {error && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 8,
+          fontSize: 12,
+          color: '#f87171',
+          background: 'rgba(248,113,113,0.08)',
+          border: '1px solid rgba(248,113,113,0.2)',
+          borderRadius: 'var(--radius-sm)',
+          padding: '8px 10px',
+          lineHeight: 1.4,
+        }}>
+          <Warning size={14} style={{ flexShrink: 0, marginTop: 1 }} />
+          {error}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Copy, ArrowSquareOut, SpinnerGap, Warning, Check } from '@phosphor-icons/react';
+import { Copy, ArrowSquareOut, SpinnerGap, Warning, Check, Key, ArrowClockwise, PencilSimple } from '@phosphor-icons/react';
 
 interface SmartMenuPublishPanelProps {
   slug: string;
@@ -10,6 +10,7 @@ interface SmartMenuPublishPanelProps {
   onUpdate: () => void;
   isExisting: boolean;
   imageUrls: string[];
+  onRetry?: () => void;
 }
 
 const sectionHeaderStyle: React.CSSProperties = {
@@ -75,6 +76,7 @@ export function SmartMenuPublishPanel({
   onUpdate,
   isExisting,
   imageUrls,
+  onRetry,
 }: SmartMenuPublishPanelProps) {
   const [copied, setCopied] = useState(false);
 
@@ -98,23 +100,67 @@ export function SmartMenuPublishPanel({
     <div className="flex flex-col gap-4">
       <span style={sectionHeaderStyle}>Publish</span>
 
-      {error && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: 8,
-          fontSize: 12,
-          color: '#f87171',
-          background: 'rgba(248,113,113,0.08)',
-          border: '1px solid rgba(248,113,113,0.2)',
-          borderRadius: 'var(--radius-sm)',
-          padding: '8px 10px',
-          lineHeight: 1.4,
-        }}>
-          <Warning size={14} style={{ flexShrink: 0, marginTop: 1 }} />
-          {error}
-        </div>
-      )}
+      {error && (() => {
+        const isAuthError = error.toLowerCase().includes('authentication');
+        const isSlugError = error.toLowerCase().includes('slug is already in use');
+        return (
+          <div style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: 8,
+            fontSize: 12,
+            color: '#f87171',
+            background: 'rgba(248,113,113,0.08)',
+            border: '1px solid rgba(248,113,113,0.2)',
+            borderRadius: 'var(--radius-sm)',
+            padding: '8px 10px',
+            lineHeight: 1.4,
+          }}>
+            {isAuthError ? (
+              <Key size={14} style={{ flexShrink: 0, marginTop: 1 }} />
+            ) : isSlugError ? (
+              <PencilSimple size={14} style={{ flexShrink: 0, marginTop: 1 }} />
+            ) : (
+              <Warning size={14} style={{ flexShrink: 0, marginTop: 1 }} />
+            )}
+            <span style={{ flex: 1 }}>
+              {error}
+              {isAuthError && (
+                <span style={{ display: 'block', fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 }}>
+                  Check your smart menu API configuration.
+                </span>
+              )}
+              {isSlugError && (
+                <span style={{ display: 'block', fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 }}>
+                  Edit the slug above and try again.
+                </span>
+              )}
+            </span>
+            {!isAuthError && !isSlugError && onRetry && (
+              <button
+                onClick={onRetry}
+                style={{
+                  background: 'none',
+                  border: '1px solid rgba(248,113,113,0.3)',
+                  borderRadius: 'var(--radius-sm)',
+                  color: '#f87171',
+                  fontSize: 11,
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  padding: '2px 8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  flexShrink: 0,
+                }}
+              >
+                <ArrowClockwise size={12} />
+                Try Again
+              </button>
+            )}
+          </div>
+        );
+      })()}
 
       {showNoImagesWarning && (
         <div style={{
