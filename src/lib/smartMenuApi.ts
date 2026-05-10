@@ -58,7 +58,7 @@ export async function createPage(
 
 export async function updatePage(
   id: string,
-  page: Partial<SmartMenuPage>
+  page: Partial<Omit<SmartMenuPage, 'id' | 'createdAt' | 'updatedAt'>>
 ): Promise<ApiResult<SmartMenuPage>> {
   if (!API_KEY) {
     return { error: 'Smart Menu API is not configured. Set VITE_SMART_MENU_API_KEY.' };
