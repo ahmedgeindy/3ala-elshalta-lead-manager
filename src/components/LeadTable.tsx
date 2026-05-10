@@ -57,7 +57,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
   useEffect(() => {
     const maxPage = Math.max(0, Math.ceil(filtered.length / PAGE_SIZE) - 1);
     if (pageIndex > maxPage) setPageIndex(maxPage);
-  }, [filtered.length]);
+  }, [filtered.length, pageIndex]);
 
   const columns = useMemo(() => [
     colHelper.display({
@@ -170,12 +170,12 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
   }), [leads]);
 
   return (
-    <div className="flex flex-col h-full overflow-hidden" style={{ position: 'relative' }}>
+    <div className="flex flex-col flex-1 overflow-hidden" style={{ position: 'relative' }}>
       <div
-        className="flex items-center justify-between flex-wrap gap-3 px-5 py-3"
+        className="lead-toolbar flex items-center justify-between flex-wrap gap-3 px-5 py-3"
         style={{ borderBottom: '1px solid var(--border-subtle)', flexShrink: 0 }}
       >
-        <div className="flex items-center gap-2">
+        <div className="lead-filters flex items-center gap-2">
           {(['all', 'pending', 'sent'] as Filter[]).map(f => (
             <button
               key={f}
@@ -198,8 +198,8 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', padding: '5px 10px', transition: 'border-color var(--transition-fast)' }}>
+        <div className="lead-actions flex items-center gap-2">
+          <div className="lead-search flex items-center gap-2" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-sm)', padding: '5px 10px', transition: 'border-color var(--transition-fast)' }}>
             <MagnifyingGlass size={13} style={{ color: 'var(--text-muted)' }} />
             <input
               value={search}
@@ -224,70 +224,125 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="lead-results flex-1 overflow-y-auto">
         {loading ? (
           <SkeletonTable />
         ) : leads.length === 0 ? (
           <EmptyState />
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-            <thead>
-              <tr style={{ background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-subtle)' }}>
-                {table.getFlatHeaders().map(header => (
-                  <th
-                    key={header.id}
-                    style={{
-                      padding: '10px 16px',
-                      textAlign: 'left',
-                      fontSize: 10,
-                      fontWeight: 600,
-                      letterSpacing: '0.8px',
-                      color: 'var(--text-muted)',
-                      textTransform: 'uppercase',
-                      position: 'sticky',
-                      top: 0,
-                      background: 'var(--bg-surface)',
-                      zIndex: 1,
-                      width: header.getSize() !== 150 ? header.getSize() : undefined,
-                    }}
+          <>
+            <div className="desktop-table-wrap">
+              <table className="lead-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+                <thead>
+                  <tr style={{ background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-subtle)' }}>
+                    {table.getFlatHeaders().map(header => (
+                      <th
+                        key={header.id}
+                        style={{
+                          padding: '10px 16px',
+                          textAlign: 'left',
+                          fontSize: 10,
+                          fontWeight: 600,
+                          letterSpacing: '0.8px',
+                          color: 'var(--text-muted)',
+                          textTransform: 'uppercase',
+                          position: 'sticky',
+                          top: 0,
+                          background: 'var(--bg-surface)',
+                          zIndex: 1,
+                          width: header.getSize() !== 150 ? header.getSize() : undefined,
+                        }}
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <motion.tbody initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.03 } } }}>
+                  <AnimatePresence>
+                    {table.getRowModel().rows.map(row => {
+                      const isActive = row.original.id === activeLeadId;
+                      const isSent = row.original.status === 'sent';
+                      return (
+                        <motion.tr
+                          key={row.original.id}
+                          layout
+                          variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
+                          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                          style={{
+                            borderBottom: '1px solid var(--border-subtle)',
+                            borderLeft: isActive ? '3px solid var(--accent)' : isSent ? '3px solid var(--success)' : '3px solid transparent',
+                            background: isActive ? 'var(--accent-muted)' : isSent ? 'var(--success-muted)' : 'transparent',
+                            opacity: 1,
+                            transition: 'background var(--transition-fast), border-left-color var(--transition-fast), opacity 0.3s',
+                          }}
+                          onMouseEnter={e => { if (!isActive && !isSent) e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}
+                          onMouseLeave={e => { if (!isActive && !isSent) e.currentTarget.style.background = 'transparent'; }}
+                        >
+                          {row.getVisibleCells().map(cell => (
+                            <td key={cell.id} style={{ padding: '11px 16px' }}>
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </td>
+                          ))}
+                        </motion.tr>
+                      );
+                    })}
+                  </AnimatePresence>
+                </motion.tbody>
+              </table>
+            </div>
+
+            <div className="mobile-lead-list">
+              {table.getRowModel().rows.map(row => {
+                const lead = row.original;
+                const isActive = lead.id === activeLeadId;
+                const isSent = lead.status === 'sent';
+                return (
+                  <motion.article
+                    key={lead.id}
+                    layout
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mobile-lead-card"
+                    data-active={isActive ? 'true' : undefined}
+                    data-sent={isSent ? 'true' : undefined}
                   >
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <motion.tbody initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.03 } } }}>
-              <AnimatePresence>
-                {table.getRowModel().rows.map(row => {
-                  const isActive = row.original.id === activeLeadId;
-                  const isSent = row.original.status === 'sent';
-                  return (
-                    <motion.tr
-                      key={row.original.id}
-                      layout
-                      variants={{ hidden: { opacity: 0, y: 8 }, visible: { opacity: 1, y: 0 } }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                      style={{
-                        borderBottom: '1px solid var(--border-subtle)',
-                        borderLeft: isActive ? '3px solid var(--accent)' : isSent ? '3px solid var(--success)' : '3px solid transparent',
-                        background: isActive ? 'var(--accent-muted)' : isSent ? 'var(--success-muted)' : 'transparent',
-                        opacity: 1,
-                        transition: 'background var(--transition-fast), border-left-color var(--transition-fast), opacity 0.3s',
-                      }}
-                      onMouseEnter={e => { if (!isActive && !isSent) e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}
-                      onMouseLeave={e => { if (!isActive && !isSent) e.currentTarget.style.background = 'transparent'; }}
-                    >
-                      {row.getVisibleCells().map(cell => (
-                        <td key={cell.id} style={{ padding: '11px 16px' }}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
-                      ))}
-                    </motion.tr>
-                  );
-                })}
-              </AnimatePresence>
-            </motion.tbody>
-          </table>
+                    <div className="mobile-lead-top">
+                      <Checkbox
+                        checked={row.getIsSelected()}
+                        disabled={!row.getCanSelect()}
+                        onChange={row.getToggleSelectedHandler()}
+                      />
+                      <div className="mobile-lead-identity">
+                        <strong>{lead.name}</strong>
+                        <span className="tabular-nums">{lead.phone}</span>
+                      </div>
+                      <StatusBadge status={lead.status} />
+                    </div>
+                    <div className="mobile-lead-bottom">
+                      <span className="mobile-lead-index tabular-nums">
+                        #{table.getState().pagination.pageIndex * PAGE_SIZE + row.index + 1}
+                      </span>
+                      {isSent ? (
+                        <span className="mobile-sent-label">
+                          <CheckCircle size={14} weight="fill" /> Sent
+                        </span>
+                      ) : (
+                        <SendButton
+                          onClick={() => {
+                            const msg = buildMessage(template, lead, campaign);
+                            window.open(buildWaLink(lead.phone, msg), 'whatsapp_window');
+                            onSend(lead.id);
+                          }}
+                          isActive={isActive}
+                        />
+                      )}
+                    </div>
+                  </motion.article>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
 
@@ -307,7 +362,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 80, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 28 }}
-            className="flex items-center justify-between"
+            className="selection-bar flex items-center justify-between"
             style={{
               position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)',
               background: 'var(--bg-raised)',
@@ -318,10 +373,10 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
               backdropFilter: 'blur(16px)',
             }}
           >
-            <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+            <div className="selection-count" style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
               <span style={{ color: 'var(--accent)', fontWeight: 700 }} className="tabular-nums">{selectedLeads.length}</span> leads selected
             </div>
-            <div className="flex items-center gap-2">
+            <div className="selection-actions flex items-center gap-2">
               <button
                 onClick={() => setRowSelection({})}
                 style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 12, fontFamily: 'var(--font-sans)', padding: '4px 8px', transition: 'color var(--transition-fast)' }}

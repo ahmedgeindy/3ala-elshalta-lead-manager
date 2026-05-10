@@ -46,6 +46,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
 
   return (
     <div
+      className="login-screen"
       style={{
         height: '100dvh',
         display: 'flex',
@@ -66,6 +67,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
       }} />
 
       <motion.div
+        className="login-card"
         animate={shake ? { x: [-8, 8, -6, 6, -4, 4, 0] } : { x: 0 }}
         transition={{ duration: 0.4 }}
         style={{
@@ -80,7 +82,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
           transition: 'border-color 0.2s',
         }}
       >
-        <div style={{
+        <div className="login-card-core" style={{
           background: 'var(--bg-surface)',
           borderRadius: 'calc(var(--radius-xl) - 8px)',
           padding: '48px 40px',

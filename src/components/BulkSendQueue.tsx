@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WhatsappLogo, SkipForward, X, CheckCircle } from '@phosphor-icons/react';
 import type { Lead, Campaign } from '../types';
@@ -15,13 +15,12 @@ interface Props {
 
 export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }: Props) {
   const [index, setIndex] = useState(0);
-  const [opened, setOpened] = useState(false);
+  const [openedLeadId, setOpenedLeadId] = useState<string | null>(null);
 
   const lead = leads[index];
+  const opened = openedLeadId === lead?.id;
   const isLast = index === leads.length - 1;
   const pct = Math.round(((index) / leads.length) * 100);
-
-  useEffect(() => { setOpened(false); }, [index]);
 
   if (!lead) {
     return (
@@ -35,7 +34,7 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
     const msg = buildMessage(template, lead, campaign);
     window.open(buildWaLink(lead.phone, msg), 'whatsapp_window');
     onMarkSent(lead.id);
-    setOpened(true);
+    setOpenedLeadId(lead.id);
   };
 
   const handleNext = () => {
@@ -59,6 +58,7 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
   return (
     <Overlay>
       <motion.div
+        className="queue-card"
         initial={{ scale: 0.92, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.92, opacity: 0, y: 20 }}
@@ -171,7 +171,7 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
               }}
             />
 
-            <div className="flex items-center gap-3">
+            <div className="queue-actions flex items-center gap-3">
               {!opened ? (
                 <button
                   onClick={handleOpen}
@@ -251,6 +251,7 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
 function Overlay({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
+      className="queue-overlay"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -270,6 +271,7 @@ function Overlay({ children }: { children: React.ReactNode }) {
 function DoneCard({ total, onClose }: { total: number; onClose: () => void }) {
   return (
     <motion.div
+      className="done-card"
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       style={{

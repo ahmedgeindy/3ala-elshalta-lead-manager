@@ -25,7 +25,9 @@ export function addSentPhone(phone: string): void {
     const phones = getSentPhones();
     phones.add(phone);
     localStorage.setItem(SENT_KEY, JSON.stringify([...phones]));
-  } catch {}
+  } catch {
+    // localStorage may be unavailable in private or restricted contexts.
+  }
 }
 
 export function clearSentPhones(): void {
@@ -35,7 +37,9 @@ export function clearSentPhones(): void {
 export function saveCampaign(campaign: Campaign): void {
   try {
     localStorage.setItem(CAMPAIGN_KEY, JSON.stringify(campaign));
-  } catch {}
+  } catch {
+    // localStorage may be unavailable in private or restricted contexts.
+  }
 }
 
 export function loadCampaign(): Campaign | null {
