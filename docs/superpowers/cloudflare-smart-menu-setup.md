@@ -10,6 +10,16 @@ Copy the returned database ID for the Worker binding configuration.
 
 ## 2. Apply Migration
 
+Before running migrations, configure Wrangler to use the committed migration directory:
+
+```toml
+[[d1_databases]]
+binding = "SMART_MENU_DB"
+database_name = "shalta-smart-menu"
+database_id = "<database-id-from-create-command>"
+migrations_dir = "cloudflare/migrations"
+```
+
 Run the migration locally first:
 
 ```powershell

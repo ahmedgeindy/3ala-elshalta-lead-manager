@@ -106,6 +106,14 @@ function notFound(): Response {
   return textResponse('Not found', 404);
 }
 
+function safeDecodeRouteParam(value: string): string | null {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return null;
+  }
+}
+
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -371,7 +379,12 @@ async function updatePage(request: Request, env: Env, id: string): Promise<Respo
   return row ? jsonResponse(mapRow(row)) : notFound();
 }
 
-async function fetchPageById(env: Env, id: string): Promise<Response> {
+async function fetchPageById(request: Request, env: Env, id: string): Promise<Response> {
+  const authResponse = await requireWriteKey(request, env);
+  if (authResponse) {
+    return authResponse;
+  }
+
   const row = await getPageById(env, id);
   return row ? jsonResponse(mapRow(row)) : notFound();
 }
@@ -408,15 +421,18 @@ async function handleRequest(request: Request, env: Env): Promise<Response> {
   }
 
   if (publicSlugMatch && request.method === 'GET') {
-    return fetchPublicPageBySlug(env, decodeURIComponent(publicSlugMatch[1]));
+    const slug = safeDecodeRouteParam(publicSlugMatch[1]);
+    return slug === null ? textResponse('Invalid route parameter.', 400) : fetchPublicPageBySlug(env, slug);
   }
 
   if (pageIdMatch && request.method === 'GET') {
-    return fetchPageById(env, decodeURIComponent(pageIdMatch[1]));
+    const id = safeDecodeRouteParam(pageIdMatch[1]);
+    return id === null ? textResponse('Invalid route parameter.', 400) : fetchPageById(request, env, id);
   }
 
   if (pageIdMatch && request.method === 'PUT') {
-    return updatePage(request, env, decodeURIComponent(pageIdMatch[1]));
+    const id = safeDecodeRouteParam(pageIdMatch[1]);
+    return id === null ? textResponse('Invalid route parameter.', 400) : updatePage(request, env, id);
   }
 
   return notFound();
