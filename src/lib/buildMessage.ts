@@ -23,5 +23,5 @@ export function buildMessage(template: string, lead: Lead, campaign: Campaign): 
 }
 
 export function buildWaLink(phone: string, message: string): string {
-  return `https://wa.me/${phone.replace('+', '')}?text=${encodeURIComponent(message)}`;
+  return `https://web.whatsapp.com/send?phone=${phone.replace('+', '')}&text=${encodeURIComponent(message)}`;
 }
