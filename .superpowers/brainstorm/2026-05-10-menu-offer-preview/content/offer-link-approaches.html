@@ -1,0 +1,56 @@
+<h2>How should offer images appear in WhatsApp?</h2>
+<p class="subtitle">The goal is to stop the message from feeling like a random hacked link, while still making the menu easy to open.</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#101820;">
+      <div style="max-width:280px;margin:0 auto;background:#005c4b;border-radius:12px;padding:8px;color:#e9edef;font:13px Arial;box-shadow:0 10px 24px rgba(0,0,0,.22)">
+        <div style="border-radius:8px;overflow:hidden;margin-bottom:8px;background:#0b141a">
+          <img src="/files/menu-cover.jpg" style="width:100%;height:120px;object-fit:cover;display:block" alt="menu cover">
+        </div>
+        <div style="line-height:1.45">Offer text...<br><span style="color:#9be7c0">shalta-menu-images.s3.amazonaws.com/menu/1778418078135...</span></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. Current link + app preview</h3>
+      <p>Fastest path. WhatsApp opens with text and image URL, but the customer still sees a long S3 link in the message.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#14120f;">
+      <div style="max-width:280px;margin:0 auto;background:#005c4b;border-radius:12px;padding:8px;color:#e9edef;font:13px Arial;box-shadow:0 10px 24px rgba(0,0,0,.22)">
+        <div style="line-height:1.55">Special offer for you<br><strong>15% off today</strong><br><span style="color:#9be7c0">open.shalta.app/menu/summer-offer</span></div>
+        <div style="margin-top:8px;border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:8px;background:rgba(0,0,0,.16)">
+          <div style="font-weight:700">Al Shalta Menu</div>
+          <div style="font-size:11px;color:#c9d6d0">Clean branded page with images, prices, phone, and order CTA</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. Branded smart menu link</h3>
+      <p>Best trust. Message uses one short branded link. The page shows menu images, offer, phone, WhatsApp order button, and tracking.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#111827;">
+      <div style="max-width:280px;margin:0 auto;background:#005c4b;border-radius:12px;padding:8px;color:#e9edef;font:13px Arial;box-shadow:0 10px 24px rgba(0,0,0,.22)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px">
+          <img src="/files/menu-cover.jpg" style="width:100%;height:96px;object-fit:cover;border-radius:7px" alt="menu cover">
+          <img src="/files/menu-details.jpg" style="width:100%;height:96px;object-fit:cover;border-radius:7px" alt="menu details">
+        </div>
+        <div style="line-height:1.45">Offer text only. Images are attached manually after WhatsApp opens.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. Manual image attachment helper</h3>
+      <p>No public link in text. The app opens WhatsApp with the message and gives the operator the exact image set to attach manually.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>My recommendation</h3>
+  <p>Use B as the default because it looks legitimate and premium. Keep C as an optional "send real image" workflow for high-value customers, because WhatsApp web links cannot reliably pre-attach images automatically.</p>
+</div>

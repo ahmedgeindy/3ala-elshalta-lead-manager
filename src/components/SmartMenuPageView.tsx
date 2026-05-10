@@ -44,9 +44,9 @@ export default function SmartMenuPageView() {
       <div style={pageShellStyle}>
         <div style={cardStyle}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>⊘</div>
-          <h1 style={errorTitleStyle}>Page not found</h1>
-          <p style={errorDescStyle}>The page you are looking for does not exist.</p>
-          <Link to="/" style={{ ...errorLinkStyle, background: 'var(--bg-elevated)', border: '1px solid var(--border-medium)', color: 'var(--text-primary)' }}>Go home</Link>
+          <h1 style={errorTitleStyle}>الصفحة غير موجودة</h1>
+          <p style={errorDescStyle}>الصفحة التي تبحث عنها غير موجودة.</p>
+          <Link to="/" style={{ ...errorLinkStyle, background: 'var(--bg-elevated)', border: '1px solid var(--border-medium)', color: 'var(--text-primary)' }}>العودة للرئيسية</Link>
         </div>
       </div>
     );
@@ -58,7 +58,7 @@ export default function SmartMenuPageView() {
         <style>{`@keyframes smart-menu-spin { to { transform: rotate(360deg); } }`}</style>
         <div style={loaderStyle}>
           <div style={spinnerStyle} />
-          <p style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 16 }}>Loading…</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: 13, marginTop: 16 }}>جاري التحميل…</p>
         </div>
       </div>
     );
@@ -71,19 +71,19 @@ export default function SmartMenuPageView() {
         <div style={cardStyle}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>{isExpiredOrGone ? '⏳' : '⚠️'}</div>
           <h1 style={errorTitleStyle}>
-            {isExpiredOrGone ? 'This offer has expired' : 'Something went wrong'}
+            {isExpiredOrGone ? 'انتهى هذا العرض' : 'حدث خطأ ما'}
           </h1>
           <p style={errorDescStyle}>
             {isExpiredOrGone
-              ? 'Contact the restaurant directly.'
-              : 'Please try again.'}
+              ? 'تواصل مع المطعم مباشرة.'
+              : 'الرجاء المحاولة مرة أخرى.'}
           </p>
           {page?.orderPhone && (
             <a
               href={`tel:${page.orderPhone}`}
               style={{ ...errorLinkStyle, background: 'var(--bg-elevated)', border: '1px solid var(--border-medium)', color: 'var(--text-primary)', marginBottom: 8 }}
             >
-              Call {page.orderPhone}
+              اتصل بـ {page.orderPhone}
             </a>
           )}
           {!isExpiredOrGone && (
@@ -91,11 +91,11 @@ export default function SmartMenuPageView() {
               onClick={retry}
               style={{ ...errorLinkStyle, background: 'var(--accent)', cursor: 'pointer', border: 'none', fontFamily: 'var(--font-sans)' }}
             >
-              Try again
+              حاول مرة أخرى
             </button>
           )}
           {isExpiredOrGone && (
-            <Link to="/" style={{ ...errorLinkStyle, background: 'var(--bg-elevated)', border: '1px solid var(--border-medium)', color: 'var(--text-primary)', fontSize: 12, padding: '10px 20px' }}>Go home</Link>
+            <Link to="/" style={{ ...errorLinkStyle, background: 'var(--bg-elevated)', border: '1px solid var(--border-medium)', color: 'var(--text-primary)', fontSize: 12, padding: '10px 20px' }}>العودة للرئيسية</Link>
           )}
         </div>
       </div>
@@ -109,17 +109,17 @@ export default function SmartMenuPageView() {
       <div style={pageShellStyle}>
         <div style={cardStyle}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
-          <h1 style={errorTitleStyle}>This offer has expired</h1>
-          <p style={errorDescStyle}>Contact the restaurant directly.</p>
+          <h1 style={errorTitleStyle}>انتهى هذا العرض</h1>
+          <p style={errorDescStyle}>تواصل مع المطعم مباشرة.</p>
           {page.orderPhone && (
             <a
               href={`tel:${page.orderPhone}`}
               style={{ ...errorLinkStyle, background: 'var(--bg-elevated)', border: '1px solid var(--border-medium)', color: 'var(--text-primary)', marginBottom: 8 }}
             >
-              Call {page.orderPhone}
+              اتصل بـ {page.orderPhone}
             </a>
           )}
-          <Link to="/" style={{ ...errorLinkStyle, background: 'var(--bg-elevated)', border: '1px solid var(--border-medium)', color: 'var(--text-primary)', fontSize: 12, padding: '10px 20px' }}>Go home</Link>
+          <Link to="/" style={{ ...errorLinkStyle, background: 'var(--bg-elevated)', border: '1px solid var(--border-medium)', color: 'var(--text-primary)', fontSize: 12, padding: '10px 20px' }}>العودة للرئيسية</Link>
         </div>
       </div>
     );

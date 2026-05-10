@@ -27,7 +27,7 @@ export function UploadZone({ onFile, stats, error, onResetHistory, loading }: Pr
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
         <span className="label" style={{ color: 'var(--accent)' }}>
-          Contact File
+          ملف جهات الاتصال
         </span>
         {hasFile && (
           <button
@@ -39,7 +39,7 @@ export function UploadZone({ onFile, stats, error, onResetHistory, loading }: Pr
             onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
           >
             <ArrowsClockwise size={11} />
-            Reset History
+            إعادة ضبط السجل
           </button>
         )}
       </div>
@@ -75,8 +75,8 @@ export function UploadZone({ onFile, stats, error, onResetHistory, loading }: Pr
               <Spinner size={20} style={{ color: 'var(--accent)' }} />
             </motion.div>
             <div className="flex-1 min-w-0">
-              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent)' }}>Processing contacts...</div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>Reading rows and normalizing phones</div>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent)' }}>جاري معالجة جهات الاتصال...</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>قراءة الصفوف وتنظيم الأرقام</div>
             </div>
           </div>
         ) : hasFile ? (
@@ -87,15 +87,15 @@ export function UploadZone({ onFile, stats, error, onResetHistory, loading }: Pr
                 3laelshalta.csv
               </div>
               <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 1 }}>
-                {stats.total} contacts · {stats.pending} pending
+                {stats.total} جهة اتصال · {stats.pending} قيد الانتظار
               </div>
             </div>
-            <span style={{ fontSize: 10, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>click to replace</span>
+            <span style={{ fontSize: 10, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>انقر للاستبدال</span>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2 text-center">
             <UploadSimple size={22} style={{ color: 'var(--text-muted)' }} />
-            <div style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 500 }}>Drop CSV or Excel here</div>
+            <div style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 500 }}>اسحب ملف CSV أو Excel هنا</div>
             <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>3laelshalta.csv · .xlsx · .xls</div>
           </div>
         )}

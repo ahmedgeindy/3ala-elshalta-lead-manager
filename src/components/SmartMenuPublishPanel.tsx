@@ -96,7 +96,7 @@ export function SmartMenuPublishPanel({
 
   return (
     <div className="flex flex-col gap-4">
-      <span style={sectionHeaderStyle}>Publish</span>
+      <span style={sectionHeaderStyle}>نشر</span>
 
       {error && (() => {
         const isAuthError = error.toLowerCase().includes('authentication');
@@ -125,12 +125,12 @@ export function SmartMenuPublishPanel({
               {error}
               {isAuthError && (
                 <span style={{ display: 'block', fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 }}>
-                  Check your smart menu API configuration.
+                  تأكد من إعدادات API القائمة الذكية.
                 </span>
               )}
               {isSlugError && (
                 <span style={{ display: 'block', fontSize: 11, color: 'var(--text-secondary)', marginTop: 2 }}>
-                  Edit the slug above and try again.
+                  قم بتعديل الرابط المختصر أعلاه وحاول مرة أخرى.
                 </span>
               )}
             </span>
@@ -153,7 +153,7 @@ export function SmartMenuPublishPanel({
                 }}
               >
                 <ArrowClockwise size={12} />
-                Try Again
+                حاول مرة أخرى
               </button>
             )}
           </div>
@@ -174,7 +174,7 @@ export function SmartMenuPublishPanel({
           lineHeight: 1.4,
         }}>
           <Warning size={14} style={{ flexShrink: 0, color: '#facc15', marginTop: 1 }} />
-          No menu images added. Adding images improves trust.
+          لم يتم إضافة أي صور للقائمة. إضافة الصور يزيد من الثقة.
         </div>
       )}
 
@@ -197,24 +197,24 @@ export function SmartMenuPublishPanel({
           <>
             <SpinnerGap size={16} style={{ animation: 'spin 1s linear infinite' }} />
             <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
-            {isExisting ? 'Updating…' : 'Publishing…'}
+            {isExisting ? 'جاري التحديث…' : 'جاري النشر…'}
           </>
-        ) : isExisting ? 'Update' : 'Publish'}
+        ) : isExisting ? 'تحديث' : 'نشر'}
       </button>
 
       {publishedUrl && (
         <div className="flex flex-col gap-2">
           <span style={{ fontSize: 11, fontWeight: 500, color: 'var(--text-muted)', letterSpacing: '0.02em' }}>
-            Published Link
+            الرابط المنشور
           </span>
           <div style={linkRowStyle}>
-            <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', direction: 'ltr', textAlign: 'left' }}>
               {publishedUrl}
             </span>
-            <button onClick={handleCopy} style={iconBtnStyle} title="Copy link">
+            <button onClick={handleCopy} style={iconBtnStyle} title="نسخ الرابط">
               {copied ? <Check size={14} style={{ color: 'var(--success)' }} /> : <Copy size={14} />}
             </button>
-            <button onClick={handleOpen} style={iconBtnStyle} title="Open in new tab">
+            <button onClick={handleOpen} style={iconBtnStyle} title="فتح في علامة تبويب جديدة">
               <ArrowSquareOut size={14} />
             </button>
           </div>

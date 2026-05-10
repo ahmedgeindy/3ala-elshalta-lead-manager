@@ -89,7 +89,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
       ),
     }),
     colHelper.accessor('name', {
-      header: 'Client',
+      header: 'العميل',
       cell: ({ row }) => (
         <span style={{
           fontWeight: row.original.id === activeLeadId ? 600 : row.original.status === 'sent' ? 400 : 500,
@@ -104,7 +104,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
       ),
     }),
     colHelper.accessor('phone', {
-      header: 'Phone',
+      header: 'رقم الهاتف',
       cell: ({ getValue }) => (
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-secondary)', direction: 'ltr', display: 'block' }} className="tabular-nums">
           {getValue()}
@@ -112,7 +112,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
       ),
     }),
     colHelper.accessor('status', {
-      header: 'Status',
+      header: 'الحالة',
       size: 110,
       cell: ({ getValue }) => <StatusBadge status={getValue()} />,
     }),
@@ -193,7 +193,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
                 fontFamily: 'var(--font-sans)',
               }}
             >
-              {f === 'all' ? `All (${counts.all})` : f === 'pending' ? `Pending (${counts.pending})` : `Sent (${counts.sent})`}
+              {f === 'all' ? `الكل (${counts.all})` : f === 'pending' ? `قيد الانتظار (${counts.pending})` : `تم الإرسال (${counts.sent})`}
             </button>
           ))}
         </div>
@@ -204,7 +204,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search name or phone..."
+              placeholder="ابحث عن اسم أو رقم..."
               style={{ background: 'none', border: 'none', outline: 'none', fontSize: 12, color: 'var(--text-primary)', width: 170, fontFamily: 'var(--font-sans)' }}
             />
           </div>
@@ -219,7 +219,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
               transition: 'all var(--transition-fast)',
             }}
           >
-            <DownloadSimple size={13} /> Export
+            <DownloadSimple size={13} /> تصدير
           </button>
         </div>
       </div>
@@ -325,7 +325,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
                       </span>
                       {isSent ? (
                         <span className="mobile-sent-label">
-                          <CheckCircle size={14} weight="fill" /> Sent
+                          <CheckCircle size={14} weight="fill" /> تم الإرسال
                         </span>
                       ) : (
                         <SendButton
@@ -374,7 +374,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
             }}
           >
             <div className="selection-count" style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-              <span style={{ color: 'var(--accent)', fontWeight: 700 }} className="tabular-nums">{selectedLeads.length}</span> leads selected
+              <span style={{ color: 'var(--accent)', fontWeight: 700 }} className="tabular-nums">{selectedLeads.length}</span> جهات اتصال محددة
             </div>
             <div className="selection-actions flex items-center gap-2">
               <button
@@ -383,7 +383,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
                 onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
                 onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
               >
-                Clear
+                مسح
               </button>
               <button
                 onClick={() => onBulkSend(selectedLeads)}
@@ -402,7 +402,7 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
                 onMouseLeave={e => (e.currentTarget.style.boxShadow = '0 4px 14px rgba(233,69,96,0.35)')}
               >
                 <Lightning size={14} weight="fill" />
-                Send to {selectedLeads.length} via WhatsApp
+                إرسال إلى {selectedLeads.length} عبر واتساب
               </button>
             </div>
           </motion.div>
@@ -543,7 +543,7 @@ function StatusBadge({ status }: { status: 'pending' | 'sent' }) {
       }}
     >
       {isSent ? <CheckCircle size={11} weight="fill" /> : <Clock size={11} />}
-      {isSent ? 'Sent' : 'Pending'}
+      {isSent ? 'تم الإرسال' : 'قيد الانتظار'}
     </span>
   );
 }
@@ -582,8 +582,8 @@ function EmptyState() {
         <line x1="14" y1="26" x2="28" y2="26" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         <line x1="14" y1="32" x2="22" y2="32" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
-      <div style={{ fontSize: 14, color: 'var(--text-secondary)' }}>Upload a CSV file to see your leads</div>
-      <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Drag and drop your contact file into the sidebar</div>
+      <div style={{ fontSize: 14, color: 'var(--text-secondary)' }}>قم برفع ملف CSV لرؤية جهات الاتصال</div>
+      <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>اسحب وأفلت ملف جهات الاتصال في الشريط الجانبي</div>
     </div>
   );
 }

@@ -111,29 +111,26 @@ button:focus-visible {
   color: var(--text-muted);
 }
 
-/* High-End Liquid Glass Architecture */
+/* Stealth Matte Surface */
 .liquid-glass {
-  background: rgba(10, 10, 14, 0.65);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), var(--shadow-md);
-}
-
-/* Double-Bezel Outer Shell */
-.doppel-shell {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  padding: 6px;
-  border-radius: var(--radius-lg);
-}
-
-/* Double-Bezel Inner Core */
-.doppel-core {
   background: var(--bg-surface);
-  border-radius: calc(var(--radius-lg) - 6px);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
-  padding: 20px;
+  border-bottom: 1px solid var(--border-medium);
+}
+
+/* Unified Surface Panel */
+.doppel-shell {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  padding: 0;
+}
+
+/* Inner Core Flattened */
+.doppel-core {
+  background: transparent;
+  border-radius: var(--radius-md);
+  box-shadow: none;
+  padding: 24px;
 }
 
 .app-shell {
@@ -180,10 +177,20 @@ button:focus-visible {
 }
 
 .app-sidebar {
+  width: 320px;
+  flex: 0 0 320px;
+  background: var(--bg-base);
+  border-inline-end: 1px solid var(--border-medium);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-config-sidebar {
   width: 380px;
   flex: 0 0 380px;
   background: var(--bg-base);
-  border-right: 1px solid var(--border-medium);
+  border-inline-start: 1px solid var(--border-medium);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -352,7 +359,7 @@ button:focus-visible {
     width: 100%;
     flex: none;
     overflow: visible;
-    border-right: 0;
+    border-inline-end: 0;
     border-bottom: 1px solid var(--border-medium);
   }
 

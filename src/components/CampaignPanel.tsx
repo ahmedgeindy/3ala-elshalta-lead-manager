@@ -9,10 +9,10 @@ interface Props {
 const isSmartLink = (url: string) => url.startsWith('/m/');
 
 const fields: { key: keyof Campaign; label: string; placeholder: string }[] = [
-  { key: 'name',     label: 'Campaign Name',  placeholder: 'e.g. Ramadan 25%' },
-  { key: 'discount', label: '{{discount}}',   placeholder: 'e.g. 25%' },
-  { key: 'duration', label: '{{duration}}',   placeholder: 'e.g. أسبوع' },
-  { key: 'url',      label: '{{url}} — Menu Link', placeholder: 'https://...' },
+  { key: 'name',     label: 'اسم الحملة',  placeholder: 'مثال: عرض الصيف ٢٥٪' },
+  { key: 'discount', label: '{{discount}}',   placeholder: 'مثال: ٢٥٪' },
+  { key: 'duration', label: '{{duration}}',   placeholder: 'مثال: أسبوع' },
+  { key: 'url',      label: '{{url}} — رابط القائمة', placeholder: 'https://...' },
 ];
 
 const inputStyle: React.CSSProperties = {
@@ -43,7 +43,7 @@ export function CampaignPanel({ campaign, onChange }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
-        Campaign Settings
+        إعدادات الحملة
       </span>
       {fields.map(({ key, label, placeholder }) => {
         if (key === 'url' && urlIsSmartLink) {
@@ -58,7 +58,7 @@ export function CampaignPanel({ campaign, onChange }: Props) {
                   {campaign.url}
                 </span>
                 <span style={{ fontSize: 10, color: 'var(--text-muted)', flexShrink: 0 }}>
-                  Smart Link
+                  رابط ذكي
                 </span>
               </div>
             </div>

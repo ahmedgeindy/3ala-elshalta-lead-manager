@@ -213,7 +213,7 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
                   onMouseLeave={e => (e.currentTarget.style.background = 'var(--success-muted)')}
                 >
                   <CheckCircle size={16} weight="fill" />
-                  {isLast ? 'Finish' : 'Next →'}
+                  {isLast ? 'إنهاء' : 'التالي ←'}
                 </button>
               )}
 
@@ -238,7 +238,7 @@ export function BulkSendQueue({ leads, campaign, template, onMarkSent, onClose }
                 }}
               >
                 <SkipForward size={14} />
-                Skip
+                تخطي
               </button>
             </div>
           </motion.div>
@@ -284,10 +284,10 @@ function DoneCard({ total, onClose }: { total: number; onClose: () => void }) {
     >
       <CheckCircle size={48} weight="fill" style={{ color: 'var(--success)', marginBottom: 16 }} />
       <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>
-        All Done
+        اكتمل الإرسال
       </div>
       <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 24 }}>
-        Sent to {total} contacts successfully.
+        تم الإرسال إلى {total} جهة اتصال بنجاح.
       </div>
       <button
         onClick={onClose}
@@ -301,7 +301,7 @@ function DoneCard({ total, onClose }: { total: number; onClose: () => void }) {
         onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.97)')}
         onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
       >
-        Close
+        إغلاق
       </button>
     </motion.div>
   );

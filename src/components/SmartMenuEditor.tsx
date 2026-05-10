@@ -94,14 +94,14 @@ export function SmartMenuEditor({ page, onChange, error }: SmartMenuEditorProps)
 
   return (
     <div className="flex flex-col gap-4">
-      <span style={sectionHeaderStyle}>Smart Menu Editor</span>
+      <span style={sectionHeaderStyle}>محرر القائمة الذكية</span>
 
       <div className="flex flex-col gap-2">
-        <label style={labelStyle}>Campaign Name</label>
+        <label style={labelStyle}>اسم الحملة</label>
         <input
           type="text"
           value={page.campaignName ?? ''}
-          placeholder="e.g. Summer Offer"
+          placeholder="مثال: عرض الصيف"
           style={inputStyle}
           onChange={(e) => handleChange('campaignName', e.target.value)}
           onFocus={handleFocus}
@@ -110,11 +110,11 @@ export function SmartMenuEditor({ page, onChange, error }: SmartMenuEditorProps)
       </div>
 
       <div className="flex flex-col gap-2">
-        <label style={labelStyle}>Slug</label>
+        <label style={labelStyle}>الرابط المختصر</label>
         <input
           type="text"
           value={page.slug ?? ''}
-          placeholder="e.g. summer-offer"
+          placeholder="مثال: summer-offer"
           style={{
             ...inputStyle,
             borderColor: slugError ? 'rgba(248,113,113,0.5)' : undefined,
@@ -134,11 +134,11 @@ export function SmartMenuEditor({ page, onChange, error }: SmartMenuEditorProps)
       </div>
 
       <div className="flex flex-col gap-2">
-        <label style={labelStyle}>Page Title</label>
+        <label style={labelStyle}>عنوان الصفحة</label>
         <input
           type="text"
           value={page.title ?? ''}
-          placeholder="e.g. Ramadan Special Menu"
+          placeholder="مثال: قائمة عروض خاصة"
           style={inputStyle}
           onChange={(e) => handleChange('title', e.target.value)}
           onFocus={handleFocus}
@@ -148,12 +148,12 @@ export function SmartMenuEditor({ page, onChange, error }: SmartMenuEditorProps)
 
       <div className="flex flex-col gap-2">
         <label style={{ ...labelStyle, fontSize: 12, fontWeight: 600, color: 'var(--text-primary)' }}>
-          Offer Headline
+          عنوان العرض
         </label>
         <input
           type="text"
           value={page.offerHeadline ?? ''}
-          placeholder="e.g. 25% Off All Meals"
+          placeholder="مثال: خصم ٢٥٪ على جميع الوجبات"
           style={{ ...inputStyle, fontSize: 15, fontWeight: 600 }}
           onChange={(e) => handleChange('offerHeadline', e.target.value)}
           onFocus={handleFocus}
@@ -162,10 +162,10 @@ export function SmartMenuEditor({ page, onChange, error }: SmartMenuEditorProps)
       </div>
 
       <div className="flex flex-col gap-2">
-        <label style={labelStyle}>Offer Description</label>
+        <label style={labelStyle}>وصف العرض</label>
         <textarea
           value={page.offerDescription ?? ''}
-          placeholder="Describe the offer details..."
+          placeholder="تفاصيل العرض..."
           style={textareaStyle}
           onChange={(e) => handleChange('offerDescription', e.target.value)}
           onFocus={handleFocus}
@@ -179,11 +179,11 @@ export function SmartMenuEditor({ page, onChange, error }: SmartMenuEditorProps)
       />
 
       <div className="flex flex-col gap-2">
-        <label style={labelStyle}>Order Phone Number</label>
+        <label style={labelStyle}>رقم هاتف الطلبات</label>
         <input
           type="tel"
           value={page.orderPhone ?? ''}
-          placeholder="e.g. +966512345678"
+          placeholder="مثال: +966512345678"
           style={inputStyle}
           onChange={(e) => handleChange('orderPhone', e.target.value)}
           onFocus={handleFocus}
@@ -192,10 +192,10 @@ export function SmartMenuEditor({ page, onChange, error }: SmartMenuEditorProps)
       </div>
 
       <div className="flex flex-col gap-2">
-        <label style={labelStyle}>WhatsApp CTA Message</label>
+        <label style={labelStyle}>رسالة زر الواتساب</label>
         <textarea
           value={page.orderMessage ?? ''}
-          placeholder="Pre-filled message when customers tap Order on WhatsApp..."
+          placeholder="الرسالة المجهزة عند الضغط على الطلب عبر الواتساب..."
           style={textareaStyle}
           onChange={(e) => handleChange('orderMessage', e.target.value)}
           onFocus={handleFocus}
@@ -237,7 +237,7 @@ export function SmartMenuEditor({ page, onChange, error }: SmartMenuEditorProps)
           }} />
         </label>
         <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
-          {page.isActive !== false ? 'Active' : 'Inactive'}
+          {page.isActive !== false ? 'نشط' : 'غير نشط'}
         </span>
       </div>
 

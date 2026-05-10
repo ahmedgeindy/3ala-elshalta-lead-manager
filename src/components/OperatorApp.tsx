@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useLeads } from '../hooks/useLeads';
 import { UploadZone } from './UploadZone';
@@ -31,6 +31,16 @@ export default function OperatorApp() {
       imageUrls: campaign.imageUrls?.length ? campaign.imageUrls : [],
     };
   });
+
+  // Sync campaign name and images into the draft if they change
+  useEffect(() => {
+    setSmartMenuPage(prev => ({
+      ...prev,
+      campaignName: campaign.name || prev.campaignName,
+      imageUrls: campaign.imageUrls,
+    }));
+  }, [campaign.name, campaign.imageUrls]);
+
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
@@ -109,26 +119,29 @@ export default function OperatorApp() {
     <div className="app-shell">
 
       <header className="liquid-glass app-header">
-        <div className="app-brand">
-          <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: 0.5, color: 'var(--text-primary)' }}>
-            على الشلته
-          </span>
-          <span style={{ color: 'var(--accent)', fontWeight: 500, fontSize: 12, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-            Operator Panel
-          </span>
+        <div className="app-brand" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img src="/logo.jpeg" alt="Logo" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: 0.5, color: 'var(--text-primary)' }}>
+              على الشلته
+            </span>
+            <span style={{ color: 'var(--accent)', fontWeight: 500, fontSize: 12, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+              لوحة تحكم التشغيل
+            </span>
+          </div>
         </div>
 
         {stats.total > 0 && (
           <div className="app-stats">
-            <span>Campaign: <strong style={{ color: 'var(--text-primary)' }}>{campaign.name || '—'}</strong></span>
+            <span>الحملة: <strong style={{ color: 'var(--text-primary)' }}>{campaign.name || '—'}</strong></span>
             <span className="tabular-nums">
-              Total: <strong style={{ color: 'var(--text-primary)' }}>{stats.total}</strong>
+              الإجمالي: <strong style={{ color: 'var(--text-primary)' }}>{stats.total}</strong>
             </span>
             <span style={{ color: 'var(--success)', fontFamily: 'var(--font-mono)' }} className="tabular-nums">
-              {stats.sent} sent
+              تم الإرسال {stats.sent}
             </span>
             <span style={{ color: 'var(--pending)', fontFamily: 'var(--font-mono)' }} className="tabular-nums">
-              {stats.pending} pending
+              قيد الانتظار {stats.pending}
             </span>
           </div>
         )}
@@ -142,34 +155,6 @@ export default function OperatorApp() {
           </div>
           <div className="sidebar-section">
             <CampaignPanel campaign={campaign} onChange={setCampaign} />
-          </div>
-          <div className="sidebar-section">
-            <SmartMenuEditor
-              page={smartMenuPage}
-              onChange={setSmartMenuPage}
-              error={publishError}
-            />
-            <div style={{ marginTop: 12 }}>
-              <SmartMenuPublishPanel
-                publishedUrl={publishedUrl}
-                publishing={publishing}
-                error={publishError}
-                onPublish={handlePublish}
-                onUpdate={handleUpdate}
-                isExisting={!!smartMenuPage.id}
-                imageUrls={smartMenuPage.imageUrls ?? []}
-                onRetry={handlePublish}
-              />
-            </div>
-          </div>
-          <div className="sidebar-section">
-            <MessageBuilder
-              template={template}
-              onChange={setTemplate}
-              previewLead={activeLead}
-              campaign={campaign}
-              onChangeCampaign={setCampaign}
-            />
           </div>
           {stats.total > 0 && (
             <div className="sidebar-section">
@@ -190,6 +175,37 @@ export default function OperatorApp() {
             onExport={exportCsv}
           />
         </main>
+
+        <aside className="app-config-sidebar">
+          <div className="sidebar-section sidebar-section-first">
+            <MessageBuilder
+              template={template}
+              onChange={setTemplate}
+              previewLead={activeLead}
+              campaign={campaign}
+              onChangeCampaign={setCampaign}
+            />
+          </div>
+          <div className="sidebar-section">
+            <SmartMenuEditor
+              page={smartMenuPage}
+              onChange={setSmartMenuPage}
+              error={publishError}
+            />
+            <div style={{ marginTop: 12 }}>
+              <SmartMenuPublishPanel
+                publishedUrl={publishedUrl}
+                publishing={publishing}
+                error={publishError}
+                onPublish={handlePublish}
+                onUpdate={handleUpdate}
+                isExisting={!!smartMenuPage.id}
+                imageUrls={smartMenuPage.imageUrls ?? []}
+                onRetry={handlePublish}
+              />
+            </div>
+          </div>
+        </aside>
       </div>
 
       <AnimatePresence>

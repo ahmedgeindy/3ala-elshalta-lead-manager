@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-10T18:00:00Z",
+  "title": "Design System: Ala Alshalta Operator Panel",
+  "extensions": {
+    "colorMeta": {
+      "primary": { "role": "primary", "displayName": "Operator Crimson", "canonical": "#E33A52", "tonalRamp": ["#fbebef", "#f5c3cc", "#ef9baa", "#e97288", "#e34a66", "#e33a52", "#b52e41", "#882231"] },
+      "neutral-surface": { "role": "neutral", "displayName": "Surface Matte", "canonical": "#0a0a0e", "tonalRamp": ["#e7e7e7", "#cfcfcf", "#b7b7b7", "#9f9f9f", "#878787", "#6f6f6f", "#3a3a3e", "#0a0a0e"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headlines only." }
+    },
+    "shadows": [
+      { "name": "transient-shadow", "value": "0 12px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.03)", "purpose": "Used only for floating popovers, never for structural layout cards." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Operator Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary action button.",
+      "html": "<button class=\"ds-btn-primary\">SEND MESSAGES</button>",
+      "css": ".ds-btn-primary { background: #E33A52; color: #fff; padding: 12px 24px; border-radius: 8px; border: none; font-weight: 500; font-family: 'Outfit', sans-serif; cursor: pointer; transition: background 0.2s; } .ds-btn-primary:hover { background: #b52e41; }"
+    },
+    {
+      "name": "Matte Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Standard panel container.",
+      "html": "<div class=\"ds-card\"><div style=\"margin-bottom: 8px; font-weight: 500; font-size: 11px; color: #9CA3AF; letter-spacing: 0.02em;\">SECTION LABEL</div><div style=\"color: #F3F4F6;\">Card Content</div></div>",
+      "css": ".ds-card { background: #0a0a0e; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 24px; font-family: 'Outfit', sans-serif; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Stealth Dashboard",
+    "overview": "The Ala Alshalta operator panel is a deeply technical, highly efficient, and utterly silent workspace. It relies on a flat, matte charcoal palette and precise typography rather than heavy lighting, blurs, or excessive nesting. It is designed to be stared at for hours without causing fatigue, placing the core action of reviewing and sending WhatsApp campaigns front and center.",
+    "keyCharacteristics": [
+      "Flat surfaces: Matte dark charcoal backgrounds with no glassmorphism or deep shadows.",
+      "Utilitarian structure: Three-column layout to reduce cognitive overload and vertical scrolling.",
+      "Precise feedback: Color (ruby, emerald, amber) is reserved exclusively for state and actions.",
+      "Readable hierarchy: 'Outfit' for clean UI reading, 'JetBrains Mono' for technical data."
+    ],
+    "rules": [
+      { "name": "The Restrained Surface Rule", "body": "The interface background is absolutely matte and flat. No gradients, no glassmorphism, no bright layered cards. The surface is just the canvas.", "section": "colors" },
+      { "name": "The Data Certainty Rule", "body": "Use JetBrains Mono and tabular-nums for all dynamic statistics, IDs, and counts. The operator must never guess a number's alignment.", "section": "typography" },
+      { "name": "The Matte Desk Rule", "body": "If it is a persistent layout element, it is flat. Shadows are only for things that can be dismissed.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do rely on subtle tonal contrast and single 1px borders to separate regions.",
+      "Do make the primary workflow obvious on every screen size.",
+      "Do use large touch targets (at least 44px) and visible focus states.",
+      "Do keep campaign setup, message preview, and lead actions readable without visual noise."
+    ],
+    "donts": [
+      "Don't use generic SaaS dashboard patterns or excessive card-in-card nesting.",
+      "Don't use overly dark hacker-style visuals with neon glows and heavy shadows.",
+      "Don't use glassmorphism (backdrop blurs with translucent backgrounds) on structural elements.",
+      "Don't use a thick colored border on one side of a card (side-tab styling) as a decorative accent."
+    ]
+  }
+}
