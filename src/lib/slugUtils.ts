@@ -12,9 +12,10 @@ export function validateSlug(slug: string): { valid: boolean; error?: string } {
 }
 
 export function generateSlug(from: string): string {
-  return from
+  const slug = from
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
+  return slug.length < 3 ? '' : slug;
 }
