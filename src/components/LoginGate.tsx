@@ -54,11 +54,14 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
         background: 'var(--bg-base)',
       }}
     >
+      {/* Cinematic Ambient Glow */}
       <div style={{
         position: 'absolute',
-        width: 320, height: 320,
+        width: '60vw', height: '60vw',
+        maxWidth: 800, maxHeight: 800,
         borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(233,69,96,0.06) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(227, 58, 82, 0.08) 0%, rgba(227, 58, 82, 0.01) 40%, transparent 70%)',
+        filter: 'blur(40px)',
         pointerEvents: 'none',
       }} />
 
@@ -67,16 +70,22 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
         transition={{ duration: 0.4 }}
         style={{
           width: '100%',
-          maxWidth: 380,
-          padding: '40px 36px',
-          background: 'var(--bg-raised)',
-          border: `1px solid ${error ? 'rgba(248,113,113,0.4)' : 'var(--accent-border)'}`,
+          maxWidth: 420,
+          padding: 8,
+          background: 'rgba(255, 255, 255, 0.02)',
+          border: `1px solid ${error ? 'rgba(248,113,113,0.4)' : 'rgba(255,255,255,0.04)'}`,
           borderRadius: 'var(--radius-xl)',
           backdropFilter: 'blur(24px)',
           boxShadow: 'var(--shadow-lg)',
           transition: 'border-color 0.2s',
         }}
       >
+        <div style={{
+          background: 'var(--bg-surface)',
+          borderRadius: 'calc(var(--radius-xl) - 8px)',
+          padding: '48px 40px',
+          boxShadow: 'inset 0 1px 0 rgba(255, 255, 255, 0.03)',
+        }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <div style={{
             width: 52, height: 52, borderRadius: 14, margin: '0 auto 14px',
@@ -86,11 +95,11 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
           }}>
             <LockSimple size={24} style={{ color: 'var(--accent)' }} weight="fill" />
           </div>
-          <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--accent)', letterSpacing: 0.5 }}>
+          <div style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             على الشلته
           </div>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
-            Lead Manager — Private Access
+          <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 6, letterSpacing: '0.02em' }}>
+            Secure Operator Terminal
           </div>
         </div>
 
@@ -177,30 +186,31 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
           disabled={!value}
           style={{
             width: '100%',
-            background: value ? 'var(--accent)' : 'rgba(255,255,255,0.05)',
+            background: value ? 'var(--text-primary)' : 'rgba(255,255,255,0.03)',
             border: 'none',
-            borderRadius: 'var(--radius-md)',
-            padding: '12px',
-            fontSize: 14, fontWeight: 700,
-            color: value ? '#fff' : 'var(--text-muted)',
+            borderRadius: 'var(--radius-full, 99px)',
+            padding: '14px',
+            fontSize: 14, fontWeight: 600,
+            color: value ? 'var(--bg-base)' : 'var(--text-muted)',
             cursor: value ? 'pointer' : 'not-allowed',
             fontFamily: 'var(--font-sans)',
-            transition: 'all var(--transition-base)',
-            boxShadow: value ? '0 4px 18px rgba(233,69,96,0.35)' : 'none',
+            transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            boxShadow: value ? '0 4px 18px rgba(255,255,255,0.15)' : 'none',
           }}
           onMouseDown={e => value && ((e.target as HTMLElement).style.transform = 'scale(0.98)')}
           onMouseUp={e => ((e.target as HTMLElement).style.transform = 'scale(1)')}
-          onMouseEnter={e => { if (value) (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 24px rgba(233,69,96,0.5)'; }}
-          onMouseLeave={e => { if (value) (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 18px rgba(233,69,96,0.35)'; }}
+          onMouseEnter={e => { if (value) (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 24px rgba(255,255,255,0.25)'; }}
+          onMouseLeave={e => { if (value) (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 18px rgba(255,255,255,0.15)'; }}
         >
-          Enter
+          Enter Console
         </button>
 
         {import.meta.env.DEV && !CORRECT && (
-          <div style={{ fontSize: 10, color: 'var(--text-muted)', textAlign: 'center', marginTop: 14 }}>
+          <div style={{ fontSize: 11, color: 'var(--text-muted)', textAlign: 'center', marginTop: 18 }}>
             Dev mode: set VITE_APP_PASSWORD in .env.local
           </div>
         )}
+        </div>
       </motion.div>
     </div>
   );

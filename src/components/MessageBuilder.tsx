@@ -207,65 +207,88 @@ export function MessageBuilder({ template, onChange, previewLead, campaign, onCh
       {preview && (
         <div style={{
           background: '#0b141a',
-          border: '1px solid rgba(37,211,102,0.2)',
-          borderRadius: 'var(--radius-md)',
+          backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M1.226 10.88L0 9.654l2.581-2.58.148.147L1.226 8.723l2.846 2.846-1.226 1.226-2.846-2.846.147-.148-1.503-1.503zM20 9.654l-1.226 1.226-2.846-2.846 1.226-1.226 2.846 2.846zM2.846 18.5L0 15.654l1.226-1.226 2.846 2.846L2.846 18.5z\' fill=\'rgba(255,255,255,0.02)\' fill-rule=\'evenodd\'/%3E%3C/svg%3E")',
+          border: '1px solid rgba(255,255,255,0.05)',
+          borderRadius: 'var(--radius-lg)',
           overflow: 'hidden',
+          padding: '16px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
         }}>
           <div style={{
-            padding: '8px 12px',
-            background: 'rgba(37,211,102,0.08)',
-            borderBottom: '1px solid rgba(37,211,102,0.12)',
-            fontSize: 9,
+            fontSize: 10,
             color: '#25d366',
-            letterSpacing: '0.8px',
-            textTransform: 'uppercase',
+            letterSpacing: '0.02em',
             direction: 'ltr',
             display: 'flex',
             alignItems: 'center',
-            gap: 4,
+            gap: 6,
+            marginBottom: 16,
+            fontWeight: 600,
           }}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
             </svg>
-            Live Preview — {previewLead?.name}
+            WhatsApp Preview — {previewLead?.name || 'Client'}
           </div>
 
-          {campaign.imageUrls.length > 0 && (
-            <div style={{ padding: '8px 12px 0', display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-              {campaign.imageUrls.filter(u => u).map((url, i) => (
-                <div
-                  key={url + i}
-                  style={{
-                    width: 60, height: 60, flexShrink: 0,
-                    borderRadius: 'var(--radius-sm)',
-                    overflow: 'hidden',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                  }}
-                >
-                  <img
-                    src={url}
-                    alt={`Offer ${i + 1}`}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
+          {/* Chat Bubble */}
+          <div style={{
+            background: '#005c4b',
+            borderRadius: '0 8px 8px 8px',
+            padding: '4px',
+            maxWidth: '90%',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.3)',
+            position: 'relative',
+          }}>
+            {/* Tail */}
+            <div style={{
+              position: 'absolute',
+              top: 0,
+              left: -8,
+              width: 0,
+              height: 0,
+              borderTop: '8px solid #005c4b',
+              borderLeft: '8px solid transparent',
+            }} />
 
-          <div
-            dir="rtl"
-            style={{
-              padding: '10px 12px',
-              fontSize: 13,
-              color: '#e9edef',
-              lineHeight: 1.8,
-              background: 'linear-gradient(135deg, #005c4b, #004d40)',
-              margin: campaign.imageUrls.length > 0 ? '8px 12px 12px' : undefined,
-              borderRadius: campaign.imageUrls.length > 0 ? '0 0 var(--radius-sm) var(--radius-sm)' : undefined,
-            }}
-            dangerouslySetInnerHTML={{ __html: formatWhatsApp(preview) }}
-          />
+            {campaign.imageUrls.length > 0 && (
+              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginBottom: 4 }}>
+                {campaign.imageUrls.filter(u => u).map((url, i) => (
+                  <div
+                    key={url + i}
+                    style={{
+                      width: campaign.imageUrls.length === 1 ? '100%' : 80,
+                      height: campaign.imageUrls.length === 1 ? 'auto' : 80,
+                      flexGrow: 1,
+                      borderRadius: 6,
+                      overflow: 'hidden',
+                      background: 'rgba(255,255,255,0.05)',
+                    }}
+                  >
+                    <img
+                      src={url}
+                      alt={`Offer ${i + 1}`}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div
+              dir="rtl"
+              style={{
+                padding: '4px 6px 8px',
+                fontSize: 14,
+                color: '#e9edef',
+                lineHeight: 1.5,
+              }}
+              dangerouslySetInnerHTML={{ __html: formatWhatsApp(preview) }}
+            />
+          </div>
         </div>
       )}
     </div>

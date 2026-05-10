@@ -35,18 +35,17 @@ export default function App() {
     <LoginGate>
     <div style={{ display: 'flex', flexDirection: 'column', height: '100dvh', background: 'var(--bg-base)' }}>
 
-      <header style={{
+      <header className="liquid-glass" style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '0 24px', height: 52, flexShrink: 0,
-        background: 'var(--bg-surface)',
-        borderBottom: '1px solid var(--accent-border)',
-        boxShadow: '0 1px 12px rgba(233, 69, 96, 0.06)',
+        padding: '0 32px', height: 64, flexShrink: 0, zIndex: 10,
       }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
-          <span style={{ fontSize: 16, fontWeight: 700, letterSpacing: 0.5, color: 'var(--accent)' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
+          <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: 0.5, color: 'var(--text-primary)' }}>
             على الشلته
           </span>
-          <span style={{ color: 'var(--text-muted)', fontWeight: 400, fontSize: 13 }}>Lead Manager</span>
+          <span style={{ color: 'var(--accent)', fontWeight: 500, fontSize: 12, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+            Operator Panel
+          </span>
         </div>
 
         {stats.total > 0 && (
@@ -68,20 +67,19 @@ export default function App() {
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
         <aside style={{
-          width: 340, flexShrink: 0,
-          background: 'var(--bg-surface)',
-          borderRight: '1px solid var(--border-subtle)',
+          width: 380, flexShrink: 0,
+          background: 'var(--bg-base)',
+          borderRight: '1px solid var(--border-medium)',
           overflowY: 'auto',
-          padding: 18,
-          display: 'flex', flexDirection: 'column', gap: 18,
+          display: 'flex', flexDirection: 'column',
         }}>
-          <Card>
+          <div style={{ padding: '32px 24px 40px' }}>
             <UploadZone onFile={loadFile} stats={stats} error={error} onResetHistory={resetHistory} loading={loading} />
-          </Card>
-          <Card>
+          </div>
+          <div style={{ padding: '32px 24px 40px', borderTop: '1px solid var(--border-subtle)' }}>
             <CampaignPanel campaign={campaign} onChange={setCampaign} />
-          </Card>
-          <Card>
+          </div>
+          <div style={{ padding: '32px 24px 40px', borderTop: '1px solid var(--border-subtle)' }}>
             <MessageBuilder
               template={template}
               onChange={setTemplate}
@@ -89,11 +87,11 @@ export default function App() {
               campaign={campaign}
               onChangeCampaign={setCampaign}
             />
-          </Card>
+          </div>
           {stats.total > 0 && (
-            <Card>
+            <div style={{ padding: '32px 24px 40px', borderTop: '1px solid var(--border-subtle)' }}>
               <ProgressPanel stats={stats} />
-            </Card>
+            </div>
           )}
         </aside>
 
@@ -124,19 +122,5 @@ export default function App() {
       </AnimatePresence>
     </div>
     </LoginGate>
-  );
-}
-
-function Card({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{
-      background: 'var(--accent-muted)',
-      border: '1px solid var(--accent-border)',
-      borderRadius: 'var(--radius-lg)',
-      padding: 16,
-      transition: 'border-color var(--transition-base)',
-    }}>
-      {children}
-    </div>
   );
 }

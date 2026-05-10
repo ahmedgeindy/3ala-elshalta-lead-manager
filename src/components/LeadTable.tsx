@@ -92,9 +92,11 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
       header: 'Client',
       cell: ({ row }) => (
         <span style={{
-          fontWeight: row.original.id === activeLeadId ? 600 : 400,
-          color: row.original.id === activeLeadId ? 'var(--accent)' : 'var(--text-primary)',
+          fontWeight: row.original.id === activeLeadId ? 600 : row.original.status === 'sent' ? 400 : 500,
+          color: row.original.id === activeLeadId ? 'var(--accent)' : row.original.status === 'sent' ? 'var(--text-muted)' : 'var(--text-primary)',
           fontSize: 13,
+          textDecoration: row.original.status === 'sent' ? 'line-through' : 'none',
+          opacity: row.original.status === 'sent' ? 0.6 : 1,
           transition: 'color var(--transition-fast)',
         }}>
           {row.original.name}
@@ -267,13 +269,13 @@ export function LeadTable({ leads, activeLeadId, campaign, template, loading, on
                       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                       style={{
                         borderBottom: '1px solid var(--border-subtle)',
-                        borderLeft: isActive ? '3px solid var(--accent)' : '3px solid transparent',
-                        background: isActive ? 'var(--accent-muted)' : 'transparent',
-                        opacity: isSent ? 0.45 : 1,
+                        borderLeft: isActive ? '3px solid var(--accent)' : isSent ? '3px solid var(--success)' : '3px solid transparent',
+                        background: isActive ? 'var(--accent-muted)' : isSent ? 'var(--success-muted)' : 'transparent',
+                        opacity: 1,
                         transition: 'background var(--transition-fast), border-left-color var(--transition-fast), opacity 0.3s',
                       }}
-                      onMouseEnter={e => { if (!isActive && !isSent) e.currentTarget.style.background = 'rgba(233,69,96,0.03)'; }}
-                      onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
+                      onMouseEnter={e => { if (!isActive && !isSent) e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}
+                      onMouseLeave={e => { if (!isActive && !isSent) e.currentTarget.style.background = 'transparent'; }}
                     >
                       {row.getVisibleCells().map(cell => (
                         <td key={cell.id} style={{ padding: '11px 16px' }}>
