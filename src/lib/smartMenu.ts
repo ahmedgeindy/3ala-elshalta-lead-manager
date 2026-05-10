@@ -44,7 +44,9 @@ export function saveSmartMenuPublishKey(value: string): void {
     } else {
       localStorage.removeItem(PUBLISH_KEY_STORAGE_KEY);
     }
-  } catch {}
+  } catch {
+    // localStorage may be unavailable in private or restricted contexts.
+  }
 }
 
 export function createDefaultSmartMenuDraft(campaign: Campaign): SmartMenuDraft {
