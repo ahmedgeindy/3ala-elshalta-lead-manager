@@ -11,6 +11,7 @@ const DEFAULT_CAMPAIGN: Campaign = {
   duration: 'أسبوع',
   url: '',
   imageUrls: [],
+  smartMenuPageId: undefined,
 };
 
 export function useLeads() {

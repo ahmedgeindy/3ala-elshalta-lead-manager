@@ -9,6 +9,7 @@ const DEFAULT_CAMPAIGN: Campaign = {
   duration: '',
   url: '',
   imageUrls: [],
+  smartMenuPageId: undefined,
 };
 
 export function getSentPhones(): Set<string> {
