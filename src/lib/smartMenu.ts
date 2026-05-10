@@ -20,7 +20,7 @@ export function validateSlug(value: string): string | null {
     return 'Smart link slug is required.';
   }
 
-  if (!SLUG_PATTERN.test(trimmed)) {
+  if (!SLUG_PATTERN.test(value)) {
     return 'Use lowercase letters, numbers, and single hyphens only.';
   }
 
@@ -32,7 +32,7 @@ export function createDefaultSmartMenuDraft(campaign: Campaign): SmartMenuDraft 
 
   return {
     id: campaign.smartMenuPageId,
-    slug: normalizeSlug(campaign.name || 'shalta-offer') || 'shalta-offer',
+    slug: normalizeSlug(campaign.name || 'shalta-offer'),
     campaignName,
     title: 'Al Shalta Menu',
     offerHeadline: campaign.discount ? `${campaign.discount} off today` : 'Special offer today',
@@ -69,16 +69,19 @@ function buildHeaders(): HeadersInit {
   return headers;
 }
 
-function getPublishErrorMessage(status: number): string {
+async function getPublishErrorMessage(response: Response): Promise<string> {
+  const { status } = response;
+
   if (status === 409) {
-    return 'Smart link slug is already in use.';
+    return 'This smart link is already used. Try another slug.';
   }
 
   if (status === 401 || status === 403) {
-    return 'Smart menu publish is not authorized.';
+    return 'Smart menu publishing is not authorized. Check Cloudflare API key setup.';
   }
 
-  return 'Failed to publish smart menu page.';
+  const responseText = await response.text();
+  return responseText || 'Failed to publish smart menu page.';
 }
 
 export async function publishSmartMenuPage(draft: SmartMenuDraft): Promise<SmartMenuPublishResult> {
@@ -100,7 +103,7 @@ export async function publishSmartMenuPage(draft: SmartMenuDraft): Promise<Smart
   }
 
   if (!response.ok) {
-    throw new Error(getPublishErrorMessage(response.status));
+    throw new Error(await getPublishErrorMessage(response));
   }
 
   let page: SmartMenuPage;
