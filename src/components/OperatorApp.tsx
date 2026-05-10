@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useLeads } from '../hooks/useLeads';
 import { UploadZone } from './UploadZone';
 import { CampaignPanel } from './CampaignPanel';
+import { SmartMenuEditor } from './SmartMenuEditor';
+import { SmartMenuPublishPanel } from './SmartMenuPublishPanel';
 import { MessageBuilder } from './MessageBuilder';
 import { ProgressPanel } from './ProgressPanel';
 import { LeadTable } from './LeadTable';
 import { BulkSendQueue } from './BulkSendQueue';
 import { LoginGate } from './LoginGate';
-import type { Lead } from '../types';
+import { createPage, updatePage } from '../lib/smartMenuApi';
+import { generateSlug } from '../lib/slugUtils';
+import type { Lead, SmartMenuPage } from '../types';
 
 export default function OperatorApp() {
   const {
@@ -18,6 +22,22 @@ export default function OperatorApp() {
 
   const [queueLeads, setQueueLeads] = useState<Lead[]>([]);
   const [queueOpen, setQueueOpen] = useState(false);
+
+  const [smartMenuPage, setSmartMenuPage] = useState<Partial<SmartMenuPage>>({});
+  const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
+  const [publishing, setPublishing] = useState(false);
+  const [publishError, setPublishError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (campaign.name && !smartMenuPage.campaignName) {
+      setSmartMenuPage(prev => ({
+        ...prev,
+        campaignName: campaign.name,
+        slug: prev.slug || generateSlug(campaign.name),
+        imageUrls: prev.imageUrls?.length ? prev.imageUrls : campaign.imageUrls,
+      }));
+    }
+  }, [campaign.name, campaign.imageUrls]);
 
   const activeLead = leads.find(l => l.id === activeLeadId) ?? null;
 
@@ -29,6 +49,63 @@ export default function OperatorApp() {
   const closeBulkQueue = () => {
     setQueueOpen(false);
     setQueueLeads([]);
+  };
+
+  const handlePublish = async () => {
+    setPublishError(null);
+    setPublishing(true);
+
+    const pageData = {
+      slug: smartMenuPage.slug ?? '',
+      campaignName: smartMenuPage.campaignName ?? campaign.name,
+      title: smartMenuPage.title ?? '',
+      offerHeadline: smartMenuPage.offerHeadline ?? '',
+      offerDescription: smartMenuPage.offerDescription ?? '',
+      imageUrls: smartMenuPage.imageUrls ?? campaign.imageUrls,
+      orderPhone: smartMenuPage.orderPhone ?? '',
+      orderMessage: smartMenuPage.orderMessage ?? '',
+      isActive: smartMenuPage.isActive ?? true,
+    };
+
+    const result = await createPage(pageData);
+    if (result.error) {
+      setPublishError(result.error);
+    } else if (result.data) {
+      const url = `/m/${result.data.slug}`;
+      setPublishedUrl(url);
+      setSmartMenuPage(result.data);
+      setCampaign({ ...campaign, url });
+    }
+    setPublishing(false);
+  };
+
+  const handleUpdate = async () => {
+    if (!smartMenuPage.id) return;
+    setPublishError(null);
+    setPublishing(true);
+
+    const pageData = {
+      slug: smartMenuPage.slug ?? '',
+      campaignName: smartMenuPage.campaignName ?? campaign.name,
+      title: smartMenuPage.title ?? '',
+      offerHeadline: smartMenuPage.offerHeadline ?? '',
+      offerDescription: smartMenuPage.offerDescription ?? '',
+      imageUrls: smartMenuPage.imageUrls ?? campaign.imageUrls,
+      orderPhone: smartMenuPage.orderPhone ?? '',
+      orderMessage: smartMenuPage.orderMessage ?? '',
+      isActive: smartMenuPage.isActive ?? true,
+    };
+
+    const result = await updatePage(smartMenuPage.id, pageData);
+    if (result.error) {
+      setPublishError(result.error);
+    } else if (result.data) {
+      const url = `/m/${result.data.slug}`;
+      setPublishedUrl(url);
+      setSmartMenuPage(result.data);
+      setCampaign({ ...campaign, url });
+    }
+    setPublishing(false);
   };
 
   return (
@@ -69,6 +146,28 @@ export default function OperatorApp() {
           </div>
           <div className="sidebar-section">
             <CampaignPanel campaign={campaign} onChange={setCampaign} />
+          </div>
+          <div className="sidebar-section">
+            <SmartMenuEditor
+              page={smartMenuPage}
+              onChange={setSmartMenuPage}
+              onPublish={handlePublish}
+              publishing={publishing}
+              error={publishError}
+            />
+            <div style={{ marginTop: 12 }}>
+              <SmartMenuPublishPanel
+                slug={smartMenuPage.slug ?? ''}
+                publishedUrl={publishedUrl}
+                publishing={publishing}
+                error={publishError}
+                onPublish={handlePublish}
+                onUpdate={handleUpdate}
+                isExisting={!!smartMenuPage.id}
+                imageUrls={smartMenuPage.imageUrls ?? []}
+                onRetry={handlePublish}
+              />
+            </div>
           </div>
           <div className="sidebar-section">
             <MessageBuilder
