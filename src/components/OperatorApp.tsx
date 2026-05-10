@@ -79,8 +79,8 @@ export default function OperatorApp() {
       setPublishedUrl(result.publicPath);
       setSmartMenuPage(result.page);
       setCampaign({ ...campaign, url: result.publicPath });
-    } catch (err: any) {
-      setPublishError(err.message);
+    } catch (err) {
+      setPublishError(err instanceof Error ? err.message : 'An error occurred.');
     }
     setPublishing(false);
   };
