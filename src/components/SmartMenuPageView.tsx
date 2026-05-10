@@ -19,6 +19,7 @@ export default function SmartMenuPageView() {
     let cancelled = false;
     setLoading(true);
     setError(null);
+    setPage(null);
     fetchPublicPage(slug).then((result) => {
       if (cancelled) return;
       if (result.error) {
@@ -123,7 +124,7 @@ export default function SmartMenuPageView() {
   }
 
   return (
-    <div style={pageShellStyle}>
+    <div style={{ ...pageShellStyle, alignItems: 'flex-start' }}>
       <style>{`@keyframes smart-menu-spin { to { transform: rotate(360deg); } }`}</style>
       <div style={contentStyle}>
         <header style={heroStyle}>
@@ -138,9 +139,11 @@ export default function SmartMenuPageView() {
             <p style={descStyle}>{page.offerDescription}</p>
           )}
 
-          <div style={ctaHeroWrapStyle}>
-            <SmartMenuCta phone={page.orderPhone} message={page.orderMessage} />
-          </div>
+          {page.orderPhone && (
+            <div style={ctaHeroWrapStyle}>
+              <SmartMenuCta phone={page.orderPhone} message={page.orderMessage} />
+            </div>
+          )}
         </header>
 
         {page.imageUrls.length > 0 && (
@@ -161,9 +164,11 @@ export default function SmartMenuPageView() {
           </section>
         )}
 
-        <div style={ctaBottomWrapStyle}>
-          <SmartMenuCta phone={page.orderPhone} message={page.orderMessage} />
-        </div>
+        {page.orderPhone && (
+          <div style={ctaBottomWrapStyle}>
+            <SmartMenuCta phone={page.orderPhone} message={page.orderMessage} />
+          </div>
+        )}
       </div>
     </div>
   );
