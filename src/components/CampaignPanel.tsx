@@ -10,7 +10,6 @@ const fields: { key: keyof Campaign; label: string; placeholder: string }[] = [
   { key: 'discount', label: '{{discount}}',   placeholder: 'e.g. 25%' },
   { key: 'duration', label: '{{duration}}',   placeholder: 'e.g. أسبوع' },
   { key: 'url',      label: '{{url}} — Menu Link', placeholder: 'https://...' },
-  { key: 'imageUrl', label: 'Offer Image',   placeholder: 'https://example.com/photo.jpg' },
 ];
 
 const inputStyle: React.CSSProperties = {
@@ -38,7 +37,7 @@ export function CampaignPanel({ campaign, onChange }: Props) {
             {label}
           </label>
           <input
-            type={key === 'url' || key === 'imageUrl' ? 'url' : 'text'}
+            type={key === 'url' ? 'url' : 'text'}
             value={campaign[key]}
             placeholder={placeholder}
             style={inputStyle}
