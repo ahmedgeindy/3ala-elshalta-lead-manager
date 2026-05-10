@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import type { SmartMenuPage } from '../types';
+import { fetchPublicPage } from '../lib/smartMenuApi';
 
 export default function SmartMenuPageView() {
   const { slug } = useParams<{ slug: string }>();
@@ -10,28 +11,18 @@ export default function SmartMenuPageView() {
 
   useEffect(() => {
     if (!slug) return;
-
     let cancelled = false;
-
-    async function fetchPage() {
-      try {
-        setLoading(true);
-        setError(null);
-        const res = await fetch(`${import.meta.env.VITE_API_URL ?? ''}/api/public/pages/${slug}`);
-        if (!res.ok) {
-          if (res.status === 404) throw new Error('Page not found');
-          throw new Error('Failed to load page');
-        }
-        const data: SmartMenuPage = await res.json();
-        if (!cancelled) setPage(data);
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'Unknown error');
-      } finally {
-        if (!cancelled) setLoading(false);
+    setLoading(true);
+    setError(null);
+    fetchPublicPage(slug).then((result) => {
+      if (cancelled) return;
+      if (result.error) {
+        setError(result.error);
+      } else {
+        setPage(result.data ?? null);
       }
-    }
-
-    fetchPage();
+      setLoading(false);
+    });
     return () => { cancelled = true; };
   }, [slug]);
 
