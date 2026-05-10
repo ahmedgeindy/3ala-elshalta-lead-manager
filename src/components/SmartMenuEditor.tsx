@@ -7,8 +7,6 @@ import { Warning } from '@phosphor-icons/react';
 interface SmartMenuEditorProps {
   page: Partial<SmartMenuPage>;
   onChange: (page: Partial<SmartMenuPage>) => void;
-  onPublish: () => void;
-  publishing: boolean;
   error: string | null;
 }
 
@@ -59,7 +57,7 @@ const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>)
   e.currentTarget.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.2)';
 };
 
-export function SmartMenuEditor({ page, onChange, onPublish: _onPublish, publishing: _publishing, error }: SmartMenuEditorProps) {
+export function SmartMenuEditor({ page, onChange, error }: SmartMenuEditorProps) {
   const [slugError, setSlugError] = useState<string | null>(null);
 
   const handleChange = useCallback(

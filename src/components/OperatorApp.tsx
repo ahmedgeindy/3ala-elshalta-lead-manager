@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useLeads } from '../hooks/useLeads';
 import { UploadZone } from './UploadZone';
@@ -23,21 +23,17 @@ export default function OperatorApp() {
   const [queueLeads, setQueueLeads] = useState<Lead[]>([]);
   const [queueOpen, setQueueOpen] = useState(false);
 
-  const [smartMenuPage, setSmartMenuPage] = useState<Partial<SmartMenuPage>>({});
+  const [smartMenuPage, setSmartMenuPage] = useState<Partial<SmartMenuPage>>(() => {
+    if (!campaign.name) return {};
+    return {
+      campaignName: campaign.name,
+      slug: generateSlug(campaign.name),
+      imageUrls: campaign.imageUrls?.length ? campaign.imageUrls : [],
+    };
+  });
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (campaign.name && !smartMenuPage.campaignName) {
-      setSmartMenuPage(prev => ({
-        ...prev,
-        campaignName: campaign.name,
-        slug: prev.slug || generateSlug(campaign.name),
-        imageUrls: prev.imageUrls?.length ? prev.imageUrls : campaign.imageUrls,
-      }));
-    }
-  }, [campaign.name, campaign.imageUrls]);
 
   const activeLead = leads.find(l => l.id === activeLeadId) ?? null;
 
@@ -151,13 +147,10 @@ export default function OperatorApp() {
             <SmartMenuEditor
               page={smartMenuPage}
               onChange={setSmartMenuPage}
-              onPublish={handlePublish}
-              publishing={publishing}
               error={publishError}
             />
             <div style={{ marginTop: 12 }}>
               <SmartMenuPublishPanel
-                slug={smartMenuPage.slug ?? ''}
                 publishedUrl={publishedUrl}
                 publishing={publishing}
                 error={publishError}

@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import { Copy, ArrowSquareOut, SpinnerGap, Warning, Check, Key, ArrowClockwise, PencilSimple } from '@phosphor-icons/react';
 
 interface SmartMenuPublishPanelProps {
-  slug: string;
   publishedUrl: string | null;
   publishing: boolean;
   error: string | null;
@@ -68,7 +67,6 @@ const iconBtnStyle: React.CSSProperties = {
 };
 
 export function SmartMenuPublishPanel({
-  slug: _slug,
   publishedUrl,
   publishing,
   error,

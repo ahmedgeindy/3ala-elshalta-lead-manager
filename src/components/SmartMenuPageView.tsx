@@ -1,27 +1,20 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import type { SmartMenuPage } from '../types';
 import { fetchPublicPage } from '../lib/smartMenuApi';
 import SmartMenuGallery from './SmartMenuGallery';
 import SmartMenuCta from './SmartMenuCta';
 
-export default function SmartMenuPageView() {
-  const { slug } = useParams<{ slug: string }>();
+function usePublicPage(slug: string | undefined) {
   const [page, setPage] = useState<SmartMenuPage | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadPage = useCallback(() => {
-    if (!slug) {
-      setLoading(false);
-      return;
-    }
-    let cancelled = false;
+  const fetchPage = (s: string) => {
     setLoading(true);
     setError(null);
     setPage(null);
-    fetchPublicPage(slug).then((result) => {
-      if (cancelled) return;
+    fetchPublicPage(s).then((result) => {
       if (result.error) {
         setError(result.error);
       } else {
@@ -29,13 +22,22 @@ export default function SmartMenuPageView() {
       }
       setLoading(false);
     });
-    return () => { cancelled = true; };
-  }, [slug]);
+  };
 
   useEffect(() => {
-    const cleanup = loadPage();
-    return () => { if (cleanup) cleanup(); };
-  }, [loadPage]);
+    if (!slug) {
+      setLoading(false);
+      return;
+    }
+    fetchPage(slug);
+  }, [slug]);
+
+  return { page, loading, error, retry: slug ? () => fetchPage(slug) : () => {} };
+}
+
+export default function SmartMenuPageView() {
+  const { slug } = useParams<{ slug: string }>();
+  const { page, loading, error, retry } = usePublicPage(slug);
 
   if (!slug) {
     return (
@@ -86,7 +88,7 @@ export default function SmartMenuPageView() {
           )}
           {!isExpiredOrGone && (
             <button
-              onClick={loadPage}
+              onClick={retry}
               style={{ ...errorLinkStyle, background: 'var(--accent)', cursor: 'pointer', border: 'none', fontFamily: 'var(--font-sans)' }}
             >
               Try again
