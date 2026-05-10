@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import type { SmartMenuPage } from '../types';
-import { fetchPublicPage } from '../lib/smartMenuApi';
+import { fetchSmartMenuPageBySlug } from '../lib/smartMenu';
 import SmartMenuGallery from './SmartMenuGallery';
 import SmartMenuCta from './SmartMenuCta';
 
@@ -14,12 +14,11 @@ function usePublicPage(slug: string | undefined) {
     setLoading(true);
     setError(null);
     setPage(null);
-    fetchPublicPage(s).then((result) => {
-      if (result.error) {
-        setError(result.error);
-      } else {
-        setPage(result.data ?? null);
-      }
+    fetchSmartMenuPageBySlug(s).then((data) => {
+      setPage(data);
+      setLoading(false);
+    }).catch((err) => {
+      setError(err.message);
       setLoading(false);
     });
   };

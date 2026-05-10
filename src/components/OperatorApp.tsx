@@ -10,7 +10,7 @@ import { ProgressPanel } from './ProgressPanel';
 import { LeadTable } from './LeadTable';
 import { BulkSendQueue } from './BulkSendQueue';
 import { LoginGate } from './LoginGate';
-import { createPage, updatePage } from '../lib/smartMenuApi';
+import { publishSmartMenuPage } from '../lib/smartMenu';
 import { generateSlug } from '../lib/slugUtils';
 import type { Lead, SmartMenuPage } from '../types';
 
@@ -61,7 +61,8 @@ export default function OperatorApp() {
     setPublishError(null);
     setPublishing(true);
 
-    const pageData = {
+    const draft = {
+      id: smartMenuPage.id,
       slug: smartMenuPage.slug ?? '',
       campaignName: smartMenuPage.campaignName ?? campaign.name,
       title: smartMenuPage.title ?? '',
@@ -73,46 +74,18 @@ export default function OperatorApp() {
       isActive: smartMenuPage.isActive ?? true,
     };
 
-    const result = await createPage(pageData);
-    if (result.error) {
-      setPublishError(result.error);
-    } else if (result.data) {
-      const url = `/m/${result.data.slug}`;
-      setPublishedUrl(url);
-      setSmartMenuPage(result.data);
-      setCampaign({ ...campaign, url });
+    try {
+      const result = await publishSmartMenuPage(draft);
+      setPublishedUrl(result.publicPath);
+      setSmartMenuPage(result.page);
+      setCampaign({ ...campaign, url: result.publicPath });
+    } catch (err: any) {
+      setPublishError(err.message);
     }
     setPublishing(false);
   };
 
-  const handleUpdate = async () => {
-    if (!smartMenuPage.id) return;
-    setPublishError(null);
-    setPublishing(true);
-
-    const pageData = {
-      slug: smartMenuPage.slug ?? '',
-      campaignName: smartMenuPage.campaignName ?? campaign.name,
-      title: smartMenuPage.title ?? '',
-      offerHeadline: smartMenuPage.offerHeadline ?? '',
-      offerDescription: smartMenuPage.offerDescription ?? '',
-      imageUrls: smartMenuPage.imageUrls ?? campaign.imageUrls,
-      orderPhone: smartMenuPage.orderPhone ?? '',
-      orderMessage: smartMenuPage.orderMessage ?? '',
-      isActive: smartMenuPage.isActive ?? true,
-    };
-
-    const result = await updatePage(smartMenuPage.id, pageData);
-    if (result.error) {
-      setPublishError(result.error);
-    } else if (result.data) {
-      const url = `/m/${result.data.slug}`;
-      setPublishedUrl(url);
-      setSmartMenuPage(result.data);
-      setCampaign({ ...campaign, url });
-    }
-    setPublishing(false);
-  };
+  const handleUpdate = handlePublish;
 
   return (
     <LoginGate>
