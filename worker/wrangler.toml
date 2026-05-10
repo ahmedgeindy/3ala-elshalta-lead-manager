@@ -5,4 +5,4 @@ compatibility_date = "2024-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "smart-menu-db"
-database_id = "placeholder-change-after-create"
+database_id = "07225d3c-583e-4153-b842-69e8c87549ce"
