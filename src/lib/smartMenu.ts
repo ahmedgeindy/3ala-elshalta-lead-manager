@@ -1,9 +1,10 @@
 import type { Campaign, SmartMenuDraft, SmartMenuPage, SmartMenuPublishResult } from '../types';
 
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+export const PUBLISH_KEY_STORAGE_KEY = 'shalta_smart_menu_publish_key_v1';
 
-const API_BASE = (import.meta.env.VITE_SMART_MENU_API_BASE ?? '/api/smart-menu').replace(/\/$/, '');
-const API_KEY = import.meta.env.VITE_SMART_MENU_API_KEY ?? '';
+const rawApiBase = import.meta.env.VITE_SMART_MENU_API_BASE?.trim();
+const API_BASE = (rawApiBase || '/api/smart-menu').replace(/\/$/, '');
 
 export function normalizeSlug(value: string): string {
   return value
@@ -27,12 +28,31 @@ export function validateSlug(value: string): string | null {
   return null;
 }
 
+export function getStoredSmartMenuPublishKey(): string {
+  try {
+    return localStorage.getItem(PUBLISH_KEY_STORAGE_KEY) ?? '';
+  } catch {
+    return '';
+  }
+}
+
+export function saveSmartMenuPublishKey(value: string): void {
+  try {
+    const trimmed = value.trim();
+    if (trimmed) {
+      localStorage.setItem(PUBLISH_KEY_STORAGE_KEY, trimmed);
+    } else {
+      localStorage.removeItem(PUBLISH_KEY_STORAGE_KEY);
+    }
+  } catch {}
+}
+
 export function createDefaultSmartMenuDraft(campaign: Campaign): SmartMenuDraft {
   const campaignName = campaign.name || 'Al Shalta Campaign';
 
   return {
     id: campaign.smartMenuPageId,
-    slug: normalizeSlug(campaign.name || 'shalta-offer'),
+    slug: normalizeSlug(campaign.name || 'shalta-offer') || 'shalta-offer',
     campaignName,
     title: 'Al Shalta Menu',
     offerHeadline: campaign.discount ? `${campaign.discount} off today` : 'Special offer today',
@@ -61,9 +81,10 @@ function buildHeaders(): HeadersInit {
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
   };
+  const publishKey = getStoredSmartMenuPublishKey();
 
-  if (API_KEY) {
-    headers['X-Smart-Menu-Key'] = API_KEY;
+  if (publishKey) {
+    headers['X-Smart-Menu-Key'] = publishKey;
   }
 
   return headers;
