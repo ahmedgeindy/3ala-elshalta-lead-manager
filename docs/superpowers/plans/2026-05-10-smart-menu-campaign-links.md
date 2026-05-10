@@ -17,7 +17,7 @@
 | `src/types.ts` | Modify | Add `SmartMenuPage`, `SmartMenuDraft`, API result types, and extend `Campaign` with `smartMenuPageId`. |
 | `src/lib/smartMenu.ts` | Create | Slug validation, draft creation, WhatsApp link creation, payload mapping, and API client. |
 | `src/lib/storage.ts` | Modify | Migrate stored campaigns to include `smartMenuPageId`. |
-| `.env.example` | Modify | Add smart menu API environment variables. |
+| `.env.example` | Modify | Add smart menu API base URL. Do not include a browser-bundled write secret. |
 | `cloudflare/smart-menu-worker.ts` | Create | Worker API for create, update, fetch by ID, and public fetch by slug. |
 | `cloudflare/migrations/0001_smart_menu_pages.sql` | Create | D1 schema for `smart_menu_pages`. |
 | `docs/superpowers/cloudflare-smart-menu-setup.md` | Create | Manual Cloudflare setup and deployment notes. |
@@ -95,8 +95,9 @@ Create these exported functions and constants:
 ```ts
 import type { Campaign, SmartMenuDraft, SmartMenuPage, SmartMenuPublishResult } from '../types';
 
-const API_BASE = (import.meta.env.VITE_SMART_MENU_API_BASE ?? '/api/smart-menu').replace(/\/$/, '');
-const API_KEY = import.meta.env.VITE_SMART_MENU_API_KEY ?? '';
+const rawApiBase = import.meta.env.VITE_SMART_MENU_API_BASE?.trim();
+const API_BASE = (rawApiBase || '/api/smart-menu').replace(/\/$/, '');
+const PUBLISH_KEY_STORAGE_KEY = 'shalta_smart_menu_publish_key_v1';
 
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -116,7 +117,7 @@ export function validateSlug(value: string): string | null {
 }
 
 export function createDefaultSmartMenuDraft(campaign: Campaign): SmartMenuDraft {
-  const slug = normalizeSlug(campaign.name || 'shalta-offer');
+  const slug = normalizeSlug(campaign.name || 'shalta-offer') || 'shalta-offer';
   return {
     id: campaign.smartMenuPageId,
     slug,
@@ -142,14 +143,35 @@ export function buildSmartMenuWhatsAppUrl(orderPhone: string, orderMessage: stri
   return `https://wa.me/${phone}?text=${encodeURIComponent(orderMessage)}`;
 }
 
+export function getStoredSmartMenuPublishKey(): string {
+  try {
+    return localStorage.getItem(PUBLISH_KEY_STORAGE_KEY) ?? '';
+  } catch {
+    return '';
+  }
+}
+
+export function saveSmartMenuPublishKey(value: string): void {
+  try {
+    if (value.trim()) {
+      localStorage.setItem(PUBLISH_KEY_STORAGE_KEY, value.trim());
+    } else {
+      localStorage.removeItem(PUBLISH_KEY_STORAGE_KEY);
+    }
+  } catch {
+    // localStorage may be unavailable in private or restricted contexts.
+  }
+}
+
 export async function publishSmartMenuPage(draft: SmartMenuDraft): Promise<SmartMenuPublishResult> {
   const slugError = validateSlug(draft.slug);
   if (slugError) throw new Error(slugError);
 
   const method = draft.id ? 'PUT' : 'POST';
   const url = draft.id ? `${API_BASE}/pages/${encodeURIComponent(draft.id)}` : `${API_BASE}/pages`;
+  const publishKey = getStoredSmartMenuPublishKey();
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (API_KEY) headers['X-Smart-Menu-Key'] = API_KEY;
+  if (publishKey) headers['X-Smart-Menu-Key'] = publishKey;
 
   const response = await fetch(url, {
     method,
@@ -185,8 +207,9 @@ Add to `.env.example`:
 
 ```env
 VITE_SMART_MENU_API_BASE=/api/smart-menu
-VITE_SMART_MENU_API_KEY=your-cloudflare-smart-menu-write-key
 ```
+
+Do not add a `VITE_` write secret. Vite environment variables are bundled into public browser JavaScript. The operator will enter the Cloudflare write key in the Smart Menu editor, and the app stores it only in that browser's localStorage.
 
 - [ ] **Step 5: Verify**
 
@@ -295,8 +318,9 @@ Set:
 
 ```env
 VITE_SMART_MENU_API_BASE=/api/smart-menu
-VITE_SMART_MENU_API_KEY=<same write key>
 ```
+
+The Cloudflare write key is not stored in the Vite build. The operator enters it in the Smart Menu editor once; the browser stores it in localStorage and sends it as `X-Smart-Menu-Key` on publish/update requests.
 ```
 
 - [ ] **Step 4: Verify**
@@ -341,6 +365,7 @@ It must:
 - Seed local draft from `createDefaultSmartMenuDraft(campaign)`.
 - Keep draft `imageUrls` synchronized with `campaign.imageUrls`.
 - Allow editing slug, title, offer headline, offer description, order phone, order message, and active status.
+- Allow entering/saving the Cloudflare publish key locally with `saveSmartMenuPublishKey`.
 - Show warning if `imageUrls.length === 0`.
 - Publish via `publishSmartMenuPage`.
 - On success, update campaign with `url: publicPath` and `smartMenuPageId: page.id`.
